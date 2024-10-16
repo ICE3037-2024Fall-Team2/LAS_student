@@ -3,10 +3,10 @@ Lab reservation website for students.
 
 ## How to Run:
 1. **Download XAMPP**:  
-   - You can download XAMPP from [this link](https://www.apachefriends.org/).
+   - [Download XAMPP](https://www.apachefriends.org/).
    
 2. **Clone the Repository**:  
-   - Clone this repository into the `C:\xampp\htdocs\` folder.
+   - AFter installing XAMPP, clone this repo into the `C:\xampp\htdocs\` folder.
 
 3. **Start XAMPP**:
    - Open the XAMPP Control Panel.
@@ -14,11 +14,11 @@ Lab reservation website for students.
 
 4. **Troubleshooting**:
    - If either **Apache** or **MySQL** does not start, check the ports they are using (often due to conflicts).
-   - For **MySQL**, check if it's already running by looking in the **Task Manager**.
+   - Also, for **MySQL**, check if it's already running in the **Task Manager**.
      - If MySQL is running, end the process and try starting it again.
 
-5. **Access the Website**:
-   - Once both services are running, open your browser and go to:
+5. **Go to the Website**:
+   - If both services are running, open your browser and go to:
      ```
      http://localhost/<folder-name>
      ```
@@ -28,7 +28,7 @@ Lab reservation website for students.
 
 # LAS Database Structure and Example Data
 
-This guide provides an overview of the database structure and example SQL commands for populating the tables.
+This provides an overview of the database structure and example SQL commands for inserting data.
 
 ## Table Structures
 
@@ -104,7 +104,6 @@ INSERT INTO `reservations` (`reservation_id`, `lab_id`, `user_id`, `date`, `time
 ```
 
 ### 3. users table:
-This inserts user records, including hashed passwords.
 ```sql
 INSERT INTO `users` (`id`, `username`, `password`) VALUES
 ('2022312312', 'lee', '$2y$10$hetL5okks7UmXE88kjxbbupn7c.zExV9IouXqF/j/ABLrwqrzEwpy'),
