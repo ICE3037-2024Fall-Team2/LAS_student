@@ -6,7 +6,7 @@ Lab reservation website for students.
    - [Download XAMPP](https://www.apachefriends.org/).
    
 2. **Clone the Repository**:  
-   - AFter installing XAMPP, clone this repo into the `C:\xampp\htdocs\` folder.
+   - After installing XAMPP, clone this repo into the `C:\xampp\htdocs\` folder.
 
 3. **Start XAMPP**:
    - Open the XAMPP Control Panel.
