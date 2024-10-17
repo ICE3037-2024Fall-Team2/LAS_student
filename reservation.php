@@ -125,12 +125,26 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
                         <?php } ?>
                     </tr>
                     <tr>
-                        <!-- 
-                        BACKEND 
-                        Implement calendar
-                        using php                
-                        -->
+                        <?php
+                        // Get the date of sunday before
+                        $startOfWeek = clone $today;
+                        $startOfWeek->modify('-' . $dayOfWeek . ' days');  // Go back to the previous Sunday
+                        
+                        // Display weekday from Sunday
+                        for ($i = 0; $i < 7; $i++) {
+                            $currentDate = clone $startOfWeek;
+                            $currentDate->modify('+' . $i . ' days');
+                            $formattedDate = $currentDate->format('Y-m-d');
 
+                            if ($currentDate == $today) {
+                                echo '<td class="available-date selected" data-date="' . $formattedDate . '">' . $currentDate->format('d') . '</td>';
+                            } elseif ($currentDate < $today) {
+                                echo '<td class="unavailable-date">' . $currentDate->format('d') . '</td>';
+                            } else {
+                                echo '<td class="available-date" data-date="' . $formattedDate . '">' . $currentDate->format('d') . '</td>';
+                            }
+                        }
+                        ?>
                     </tr>
                 </table>
             </div>
