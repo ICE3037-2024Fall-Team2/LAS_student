@@ -74,12 +74,10 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/index.css"> 
     <link rel="stylesheet" href="css/reservation.css"> 
-
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- jquery? -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
@@ -186,9 +184,26 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
     </div>
 
     <script>
-        //implemented later:
-        //function toggleMenu()
-        //function closeMenu()
+        function toggleMenu() {
+            var menu = document.getElementById('userMenu');
+            menu.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            var menu = document.getElementById('userMenu');
+            menu.classList.remove('active');
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById('userMenu');
+            var icon = document.querySelector('.fa-user');
+        
+            // If the click is outside the dropdown and the icon, close the dropdown
+            if (!menu.contains(event.target) && !icon.contains(event.target)) {
+                menu.classList.remove('active');
+            }
+        });
         
         $(document).ready(function () {
             // Handling date click
