@@ -5,7 +5,8 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-
+$toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
+unset($_SESSION['toastr']);
 //
 //BACKEND
 //implement info display 
@@ -55,6 +56,11 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <!-- Toastr -->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
     <link rel="stylesheet" href="css/style.css"> 
     <!--css/index.css"> 
     <css/profile.css"--> 
@@ -144,7 +150,7 @@ $conn->close();
         <!-- Change Password Section -->
         <div id="change-password">
             <h2>Change Password</h2>
-            <form action="change_password.php" method="post">
+            <form id="change-password-form" action="change_password.php" method="post">
                 <div>
                     <label for="current-password">Current Password:</label>
                     <input type="password" name="current-password" id="current-password" required>
@@ -212,7 +218,24 @@ $conn->close();
             reader.readAsDataURL(file);
         }
     });
+    
+    document.getElementById('change-password-form').addEventListener('submit', function(event) {
+        var currentPasswordInput = document.getElementById('current-password');
+        var newPasswordInput = document.getElementById('new-password');
+        
+        currentPasswordInput.value = currentPasswordInput.value.trim();
+        newPasswordInput.value = newPasswordInput.value.trim();
+    });
 });
+</script>
+
+<?php if ($toastr): ?>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            toastr.<?php echo $toastr['type']; ?>('<?php echo $toastr['message']; ?>');
+        });
+    </script>
+    <?php endif; ?>
     
 </script>
 
