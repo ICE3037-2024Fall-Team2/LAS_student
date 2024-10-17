@@ -7,8 +7,26 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
+require 'db_connect.php';
 
-$username = $_SESSION['username'];
+// Query to get all labs from the database
+//$sql = "SELECT lab_id, lab_name, address FROM labs";
+//$result = $conn->query($sql);
+
+
+//add logic: only show the lab related to the user
+$sql = "SELECT lab_id FROM lab_stu WHERE user_id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $id);
+$stmt->execute();
+$stmt->bind_result($lab_id);
+
+$lab_ids = [];
+
+while ($stmt->fetch()) {
+    $lab_ids[] = $lab_id;
+}
+$stmt->close();
 ?>
 
 <!DOCTYPE html>
@@ -49,10 +67,8 @@ $username = $_SESSION['username'];
     </div>
 
     <div id="book-lab-block">
-        <?php 
-        //some backend implementation
-        //check when implementing
-        if ($result->num_rows > 0) {
+    <?php
+        /*if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) { // Printing the blocks for labs
                 echo '
             <div class="lab-block">
@@ -65,7 +81,41 @@ $username = $_SESSION['username'];
             }
         } else {
             echo '<p>No labs available.</p>';
+        }*/
+        if (!empty($lab_ids)) {
+            $in = str_repeat('?,', count($lab_ids) - 1) . '?';
+            $sql = "SELECT lab_id, lab_name, address FROM labs WHERE lab_id IN ($in)";
+            $stmt = $conn->prepare($sql);
+        
+            $types = str_repeat('s', count($lab_ids)); 
+            $stmt->bind_param($types, ...$lab_ids); 
+            $stmt->execute();
+        
+            $stmt->bind_result($lab_id, $lab_name, $address);
+        
+            $lab_found = false;
+            while ($stmt->fetch()) {
+                $lab_found = true;
+                echo '
+                    <div class="lab-block">
+                        <div class="lab-info">
+                            <h3>' . htmlspecialchars($lab_name) . '</h3>
+                            <p>' . htmlspecialchars($address) . '</p>
+                        </div>
+                        <button class="book-btn" onclick="window.location.href=\'reservation.php?lab_id=' . $lab_id . '\'">Go to Reserve</button>
+                    </div>';
+            }
+        
+            if (!$lab_found) {
+                echo '<p>No labs available.</p>';
+            }
+        
+            $stmt->close();
+        } else {
+            echo '<p>No labs available.</p>';
         }
+        
+        $conn->close();
         ?>
     </div>
     <script>
