@@ -1,6 +1,7 @@
 <?php
 session_start();
-
+$toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
+unset($_SESSION['toastr']);
 /*
 $servername = "localhost";
 $username = "root";  
@@ -21,8 +22,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $entered_password = $_POST['password'];
 
     // Fetch user info based on the provided student ID
-    $sql = "SELECT * FROM users WHERE id='$id'";
-    $result = $conn->query($sql);
+    //$sql = "SELECT * FROM users WHERE id='$id'";
+    //$result = $conn->query($sql);
+    $sql = "SELECT * FROM users WHERE id = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
         $row = $result->fetch_assoc();
@@ -38,11 +44,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             exit();
         } else {
             //echo "Invalid password!";
-            echo "<script>alert('Invalid password!');</script>";
+            //echo "<script>alert('Invalid password!');</script>";
+            $_SESSION['toastr'] = array(
+                'type' => 'error',
+                'message' => 'Invalid password!'
+            );
+            header("Location: login.php");
         }
     } else {
         //echo "User not found!";
-        echo "<script>alert('User not found!');</script>";
+        //echo "<script>alert('User not found!');</script>";
+        $_SESSION['toastr'] = array(
+            'type' => 'error',
+            'message' => 'User not found!'
+        );
+        header("Location: login.php");
     }
 }
 
@@ -57,6 +73,11 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKKU LAS - Login</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- Toastr -->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
     <script>
         function validateLoginForm() {
             var id = document.getElementById('userid').value;
@@ -104,6 +125,14 @@ $conn->close();
             </ul>
         </div>
     </div>
+
+    <?php if ($toastr): ?>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            toastr.<?php echo $toastr['type']; ?>('<?php echo $toastr['message']; ?>');
+        });
+    </script>
+    <?php endif; ?>
 
 </body>
 

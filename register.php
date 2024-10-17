@@ -1,4 +1,5 @@
 <?php
+session_start();
 /*
 $servername = "localhost";
 $username = "root";  
@@ -26,7 +27,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
         // Add user to the users table
-        $sql = "INSERT INTO users (id, username, password) VALUES ('$id', '$username', '$hashed_password')";
+        /*$sql = "INSERT INTO users (id, username, password) VALUES ('$id', '$username', '$hashed_password')";
 
         if ($conn->query($sql) === TRUE) {
             // Registration successful - show an alert
@@ -40,9 +41,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Show error message for invalid ID in an alert
         echo "<script>alert('Student ID must be exactly 10 digits!');</script>";
+    }*/
+        $sql = "INSERT INTO users (id, username, password) VALUES (?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+
+        // Bind the parameters to the prepared statement
+        $stmt->bind_param("sss", $id, $username, $hashed_password);
+
+        // Execute the prepared statement
+        if ($stmt->execute()) {
+            // Registration successful - redirect to login page
+            // Use session to pass success message (no need for output before header())
+            $_SESSION['toastr'] = array(
+                'type' => 'success',
+                'message' => 'Sign Up successful!'
+            );
+            // Ensure script stops after header redirection
+        } else {
+            // Handle errors during the execution
+            //echo "<script>alert('Error: " . $errorMessage . "');</script>";
+            //$errorMessage = htmlspecialchars($stmt->error, ENT_QUOTES, 'UTF-8');
+            $_SESSION['toastr'] = array(
+                'type' => 'error',
+                'message' => $stmt->error
+            );
+        }
+        header("Location: login.php");
+        exit(); 
+
+        // Close the prepared statement
+        $stmt->close();
+    } else {
+        // Show error message for invalid ID format
+        //echo "<script>alert('Student ID must be exactly 10 digits!');</script>";
+        echo "<script>toastr.warning('Student ID must be exactly 10 digits!');</script>";
     }
-    
 }
+
 
 $conn->close();
 ?>
@@ -55,6 +90,11 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
     <link rel="stylesheet" href="css/style.css"> 
+    <!-- Toastr -->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
     
     <script>
         function validateRegistrationForm() {
@@ -86,7 +126,10 @@ $conn->close();
                 <div class="loginBox">
                     <div class="inputText">
                         <label for="id">Student ID</label>
-                        <input id="id" type="text" name="id" value="" autocomplete="off" placeholder="Student ID" required>
+                        <input id="id" type="text" name="id" value="" 
+                        pattern="[0-9]{10}"
+                        title="Student ID must be exactly 10 digits." 
+                        autocomplete="off" placeholder="Student ID" required>
                     </div>
                     <div class="inputText">
                         <label for="username">Username</label>
