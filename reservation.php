@@ -208,9 +208,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
         $(document).ready(function () {
             // Handling date click
             $('.available-date').on('click', function () {
-                console.log("Clicked date:", $(this).data('date'));  // Debug: log clicked date
-
-                // Remove the 'selected' class from all date cells
+                // Deselect all dates
                 $('.calendar-block td').removeClass('selected');
 
                 // Select clciked date
