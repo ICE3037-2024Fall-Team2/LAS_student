@@ -4,7 +4,7 @@ session_start();
 /*
 $servername = "localhost";
 $username = "root";  
-$password = "wyq001102";     
+$password = "";     
 $dbname = "las_db";  
 
 
