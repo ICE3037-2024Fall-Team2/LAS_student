@@ -1,6 +1,4 @@
 <?php
-
-// link to mysql
 /*
 $servername = "localhost";
 $username = "root";  
@@ -31,13 +29,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO users (id, username, password) VALUES ('$id', '$username', '$hashed_password')";
 
         if ($conn->query($sql) === TRUE) {
-            echo "Registration successful!";
+            // Registration successful - show an alert
+            echo "<script>alert('Registration successful!');</script>";
+            header("Location: login.php");
         } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
+            // Show error message in an alert
+            $errorMessage = $conn->error;
+            echo "<script>alert('Error: " . addslashes($errorMessage) . "');</script>";
         }
     } else {
-        echo "Student ID must be exactly 10 digits!";
+        // Show error message for invalid ID in an alert
+        echo "<script>alert('Student ID must be exactly 10 digits!');</script>";
     }
+    
 }
 
 $conn->close();

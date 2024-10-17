@@ -7,7 +7,6 @@ $username = "root";
 $password = "";     
 $dbname = "las_db";  
 
-
 $conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
@@ -38,13 +37,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: index.php"); // redirect to welcome page
             exit();
         } else {
-            echo "Invalid password!";
+            //echo "Invalid password!";
+            echo "<script>alert('Invalid password!');</script>";
         }
     } else {
-        echo "User not found!";
+        //echo "User not found!";
+        echo "<script>alert('User not found!');</script>";
     }
 }
-
 
 $conn->close();
 ?>
@@ -58,9 +58,15 @@ $conn->close();
     <title>SKKU LAS - Login</title>
     <link rel="stylesheet" href="css/style.css">
     <script>
-        //BACKEND
-        //IMPLEMENT validateLoginForm()
-        //USING JS
+        function validateLoginForm() {
+            var id = document.getElementById('userid').value;
+            var password = document.getElementById('password').value;
+            if (id === "" || password === "") {
+                alert("Please fill in all fields.");
+                return false;
+            }
+            return true;
+        }
     </script>
 </head>
 
@@ -68,6 +74,7 @@ $conn->close();
     <div id="header">
         <h1 id="logoKo" class="header_logo"><img src="img/logo.png?v=4"></h1>
         <h2 id="logoTitle">Lab Appointment system</h2>
+        <!--h1 id="logoEn" style="display:none" class="header_logo"><img src="customs/resources/image/logo_en.png"></h1-->
     </div>
     <div id="login_wrapper">
         <form action="login.php" method="post" onsubmit="return validateLoginForm()">
