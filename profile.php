@@ -13,7 +13,12 @@ if (!isset($_SESSION['username'])) {
 //using php
 //
 
-
+// Example values
+$student_id = "2022123456";
+$username = "john_doe";
+$phone_number = "010-1234-5678";
+$email = "john_doe@domain.com";
+$photo_path = null; // photo is null for now
 ?>
 
 <!DOCTYPE html>
