@@ -6,6 +6,9 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['username'])) {
     exit();
 }
 
+$toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
+unset($_SESSION['toastr']);
+
 require 'db_connect.php';
 
 // Set timezone to Korea Standard Time (UTC+9)
@@ -34,16 +37,17 @@ $stmt->bind_param("s", $lab_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
-
+$lab_capacity = 0;
 if ($result->num_rows > 0) {
     $lab = $result->fetch_assoc();
+    $lab_capacity = $lab['capacity'];
 } else {
     echo "Lab not found!";
     exit();
 }
 
 // Selects unavailable timetables from DB (for the chosen date)
-function getUnavailableTimetables($conn, $lab_id, $date)
+function getUnavailableTimetables($conn, $lab_id, $date, $lab_capacity)
 {
     /*$sql = "SELECT time FROM reservations WHERE lab_id='$lab_id' AND date='$date'";
     $result = $conn->query($sql);
@@ -54,20 +58,33 @@ function getUnavailableTimetables($conn, $lab_id, $date)
             $unavailable[] = $row['time'];
         }
     }*/
-    $sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
+    //$sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
+    /*$sql = "SELECT time, COUNT(*) as reservation_count 
+            FROM reservations 
+            WHERE lab_id = ? AND date = ?
+            GROUP BY time";
+    */
+    $user_id =  $_SESSION['id'];
+    $sql = "SELECT time, COUNT(*) as reservation_count, 
+                   SUM(CASE WHEN user_id = ? THEN 1 ELSE 0 END) as user_reserved
+            FROM reservations 
+            WHERE lab_id = ? AND date = ?
+            GROUP BY time";
+
     $stmt = $conn->prepare($sql);
-    // Bind the parameters (lab_id as string, date as string)
-    $stmt->bind_param("ss", $lab_id, $date);
-    // Execute the statement
+    // Bind the parameters (user_id, lab_id as string, date as string)
+    $stmt->bind_param("sss", $user_id, $lab_id, $date);
     $stmt->execute();
-    // Bind the result
-    $stmt->bind_result($time);
+    $stmt->bind_result($time, $reservation_count, $user_reserved);
     
     $unavailable = [];
     
     // Fetch all the unavailable times
     while ($stmt->fetch()) {
-        $unavailable[] = $time;
+        // 如果预约人数已经达到实验室容量，或者当前用户已经预约了这个时间段
+        if ($user_reserved != 0 || $reservation_count >= $lab_capacity) {
+            $unavailable[] = $time;  // 标记时间为不可用
+        }
     }
     
     // Close the statement
@@ -77,7 +94,7 @@ function getUnavailableTimetables($conn, $lab_id, $date)
 }
 
 // Get unavailable times for today
-$unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format('Y-m-d'));
+$unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format('Y-m-d'), $lab_capacity);
 ?>
 
 <!DOCTYPE html>
@@ -87,6 +104,12 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation - <?php echo htmlspecialchars($lab['lab_name']); ?></title>
+    <!-- Toastr -->
+    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+
+    
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/index.css"> 
     <link rel="stylesheet" href="css/reservation.css"> 
@@ -208,9 +231,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
         $(document).ready(function () {
             // Handling date click
             $('.available-date').on('click', function () {
-                console.log("Clicked date:", $(this).data('date'));  // Debug: log clicked date
-
-                // Remove the 'selected' class from all date cells
+                // Deselect all dates
                 $('.calendar-block td').removeClass('selected');
 
                 // Select clciked date
@@ -248,6 +269,14 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
             });
         });
     </script>
+
+    <?php if ($toastr): ?>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            toastr.<?php echo $toastr['type']; ?>('<?php echo $toastr['message']; ?>');
+        });
+    </script>
+    <?php endif; ?>
 </body>
 
 </html>
