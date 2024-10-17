@@ -15,20 +15,46 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $selected_time = $_POST['selected_time']; 
     $verified = false;
 
-    $reservation_id = date('YmdHi') . rand(100, 999); 
-    // Insert the reservation into the database
-    //$sql = "INSERT INTO reservations (lab_id, user_id, date, time) VALUES ('$lab_id', '$user_id', '$selected_date', '$selected_time')";
-    $sql = "INSERT INTO reservations (reservation_id, lab_id, user_id, date, time, verified) VALUES (?, ?, ?, ?, ?, ?)";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("sssssi", $reservation_id, $lab_id, $user_id, $selected_date, $selected_time, $verified);
-    if ($stmt->execute()) {
-        // Redirect to profile.php after successful reservation
-        header("Location: profile.php");
-        exit();
+
+    $check_sql = "SELECT * FROM reservations WHERE lab_id = ? AND user_id = ? AND date = ? AND time = ?";
+    $check_stmt = $conn->prepare($check_sql);
+    $check_stmt->bind_param("ssss", $lab_id, $user_id, $selected_date, $selected_time);
+    $check_stmt->execute();
+    $check_stmt->store_result();
+
+    if ($check_stmt->num_rows > 0) {
+        $_SESSION['toastr'] = array(
+            'type' => 'warning',
+            'message' => 'You have already reserved for this time.'
+        );
+        //header("Location: profile.php");
+        //exit;
     } else {
-        echo "Error: " . $sql . "<br>" . $conn->error;
+        $reservation_id = date('YmdHi') . rand(100, 999); 
+
+        $sql = "INSERT INTO reservations (reservation_id, lab_id, user_id, date, time, verified) VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("sssssi", $reservation_id, $lab_id, $user_id, $selected_date, $selected_time, $verified);
+
+        if ($stmt->execute()) {
+            $_SESSION['toastr'] = array(
+                'type' => 'success',
+                'message' => 'Reservation successfully created.'
+            );
+        } else {
+            $_SESSION['toastr'] = array(
+                'type' => 'error',
+                'message' => 'Error: Failed to create reservation.'
+            );
+        }
     }
+
+    $check_stmt->close();
+    $stmt->close();
+    header("Location: profile.php");
+    exit;
 }
+
 
 $conn->close();
 ?>
