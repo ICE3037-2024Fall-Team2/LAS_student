@@ -21,42 +21,47 @@ if ($conn->connect_error) {
 */
 require 'db_connect.php';
 
-//
-//BACKEND
-//Process the form submission
-//not updated yet, fix the code below
-//
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $student_id = $_SESSION['id'];
-    $lab_name = $_POST['lab_name'];
-    $reservation_time = str_replace('T', ' ', $_POST['reservation_time']); // Convert datetime-local to MySQL format
+date_default_timezone_set('Asia/Seoul');
+$today = new DateTime();
+$dayOfWeek = $today->format('w'); // 0 = Sun, 6 = Sat
 
-    // Check for conflicts (optional)
-    $check_sql = "SELECT * FROM reservations WHERE lab_name = ? AND reservation_time = ?";
-    $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("ss", $lab_name, $reservation_time);
-    $check_stmt->execute();
-    $result = $check_stmt->get_result();
+$weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    if ($result->num_rows > 0) {
-        echo "Error: A reservation already exists for this lab and time.";
-    } else {
-        // Prepare and bind SQL statement to prevent SQL injection
-        $stmt = $conn->prepare("INSERT INTO reservations (student_id, lab_name, reservation_time) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $student_id, $lab_name, $reservation_time);
-
-        if ($stmt->execute()) {
-            echo "Reservation successful!";
-        } else {
-            echo "Error: " . $stmt->error;
-            echo "<br>Debug info: student_id=$student_id, lab_name=$lab_name, reservation_time=$reservation_time";
-        }
-        $stmt->close();
-    }
-    $check_stmt->close();
+// Fetch lab details
+$lab_id = isset($_GET['lab_id']) ? $_GET['lab_id'] : null;
+if ($lab_id === null) {
+    echo "Invalid lab selection.";
+    exit();
 }
 
-$conn->close();
+//Select chosen lab info
+$sql = "SELECT * FROM labs WHERE lab_id='$lab_id'";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $lab = $result->fetch_assoc();
+} else {
+    echo "Lab not found!";
+    exit();
+}
+
+// Selects unavailable timetables from DB (for the chosen date)
+function getUnavailableTimetables($conn, $lab_id, $date)
+{
+    $sql = "SELECT time FROM reservations WHERE lab_id='$lab_id' AND date='$date'";
+    $result = $conn->query($sql);
+
+    $unavailable = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $unavailable[] = $row['time'];
+        }
+    }
+    return $unavailable;
+}
+
+// Get unavailable times for today
+$unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format('Y-m-d'));
 ?>
 
 <!DOCTYPE html>

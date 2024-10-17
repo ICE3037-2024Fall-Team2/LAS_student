@@ -117,9 +117,26 @@ $stmt->close();
         ?>
     </div>
     <script>
-        //implemented later:
-        //function toggleMenu()
-        //function closeMenu()
+        function toggleMenu() {
+            var menu = document.getElementById('userMenu');
+            menu.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            var menu = document.getElementById('userMenu');
+            menu.classList.remove('active');
+        }
+
+        // Close the dropdown if the user clicks outside of it
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById('userMenu');
+            var icon = document.querySelector('.fa-user');
+        
+            // If the click is outside the dropdown and the icon, close the dropdown
+            if (!menu.contains(event.target) && !icon.contains(event.target)) {
+                menu.classList.remove('active');
+            }
+        });
     </script>
 
 </body>

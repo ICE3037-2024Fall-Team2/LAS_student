@@ -29,7 +29,7 @@ CREATE TABLE `labs` (
 
 
 CREATE TABLE `reservations` (
-  `reservation_id` varchar(12) NOT NULL,
+  `reservation_id` varchar(15) NOT NULL,
   `lab_id` varchar(5) NOT NULL,
   `user_id` varchar(10) NOT NULL,
   `date` date NOT NULL,
