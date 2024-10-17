@@ -16,11 +16,34 @@ if ($conn->connect_error) {
 */
 require 'db_connect.php';
 
-//
-//IMPLEMENT BACKEND
-//HANDLE LOGIN
-//USING PHP
-//
+// Handle login
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = $_POST['id'];
+    $entered_password = $_POST['password'];
+
+    // Fetch user info based on the provided student ID
+    $sql = "SELECT * FROM users WHERE id='$id'";
+    $result = $conn->query($sql);
+
+    if ($result->num_rows > 0) {
+        $row = $result->fetch_assoc();
+        $stored_password_hash = $row['password'];
+
+        // Verify the entered password with the stored hashed password
+        if (password_verify($entered_password, $stored_password_hash)) {
+            // Password is correct, set session variables
+            $_SESSION['id'] = $row['id'];
+            $_SESSION['username'] = $row['username'];
+
+            header("Location: index.php"); // redirect to welcome page
+            exit();
+        } else {
+            echo "Invalid password!";
+        }
+    } else {
+        echo "User not found!";
+    }
+}
 
 
 $conn->close();
