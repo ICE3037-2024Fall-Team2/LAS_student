@@ -62,6 +62,10 @@
     float: right;
 }
 
+#qr-butt {
+    float: none;
+}
+
 .edit:hover {
     background-color: #3d6b0b;
 }

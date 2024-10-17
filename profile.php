@@ -46,7 +46,25 @@ if ($stmt->fetch()) {
 } 
 
 $stmt->close();
-$conn->close();
+
+//upcoming reservation
+date_default_timezone_set('Asia/Seoul');
+$today = new DateTime();
+$today_str = $today->format('Y-m-d');
+$future_sql = "SELECT lab_id, date, time FROM reservations WHERE user_id = ? AND date >= ? ORDER BY date, time";
+$future_stmt = $conn->prepare($future_sql);
+$future_stmt->bind_param("ss", $_SESSION['id'], $today_str);
+$future_stmt->execute();
+$future_result = $future_stmt->get_result();
+
+$past_date = $today->modify('-30 days')->format('Y-m-d');
+$past_sql = "SELECT lab_id, date, time, verified FROM reservations WHERE user_id = ? AND date < ? ORDER BY date DESC, time";
+$past_stmt = $conn->prepare($past_sql);
+$past_stmt->bind_param("ss", $_SESSION['id'], $today_str);
+$past_stmt->execute();
+$past_result = $past_stmt->get_result();
+
+//$conn->close();
 ?>
 
 
@@ -108,27 +126,70 @@ $conn->close();
         <!-- Reservations Info Section -->
         <div id="reservations-info">
             <h2>Upcoming Reservations</h2>
-            <?php
-            // Placeholder for upcoming reservations from the database
-            // Add SQL query here to fetch upcoming reservations
-            // If found, print them
-            // else print 'No upcoming reservations found.'
-
-            echo "<p>No upcoming reservations.</p>"; // sample text
-            ?>
+            <table border="1">
+        <thead>
+            <tr>
+                <th>Lab ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>generate QR Code</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($future_result->num_rows > 0) { ?>
+                <?php while ($row = $future_result->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['lab_id']); ?></td>
+                        <td><?php echo htmlspecialchars($row['date']); ?></td>
+                        <td><?php echo htmlspecialchars($row['time']); ?></td>
+                        <td>
+                            <form action="generate_qr.php" method="post">
+                                <input type="hidden" name="lab_id" value="<?php echo $row['lab_id']; ?>">
+                                <input type="hidden" name="date" value="<?php echo $row['date']; ?>">
+                                <input type="hidden" name="time" value="<?php echo $row['time']; ?>">
+                                <button type="submit" class="edit" id="qr-butt">View QR Code</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr>
+                    <td colspan="4">No upcoming reservations.</td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
         </div>
 
         <!-- Past Reservations Section -->
         <div id="past-reservations">
-            <h2>Past Reservations</h2>
-            <?php
-            // Placeholder for past reservations from db
-            // get past reservations
-            // if found, print them
-            // else print 'No  reservations found.'
-
-            echo "<p>No past reservations.</p>"; // sample text
-            ?>
+            <h2>Past Reservations (Past 30days)</h2>
+            <table border="1">
+        <thead>
+            <tr>
+                <th>Lab ID</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Attended</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if ($past_result->num_rows > 0) { ?>
+                <?php while ($row = $past_result->fetch_assoc()) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($row['lab_id']); ?></td>
+                        <td><?php echo htmlspecialchars($row['date']); ?></td>
+                        <td><?php echo htmlspecialchars($row['time']); ?></td>
+                        <td><?php echo $row['verified'] ? 'Yes' : 'No'; ?></td>
+                    </tr>
+                <?php } ?>
+            <?php } else { ?>
+                <tr>
+                    <td colspan="4">No past reservations in the last 30 days.</td>
+                </tr>
+            <?php } ?>
+        </tbody>
+    </table>
         </div>
 
         <!-- Change Password Section -->
@@ -223,3 +284,8 @@ $conn->close();
 </body>
 
 </html>
+<?php
+$future_stmt->close();
+$past_stmt->close();
+$conn->close();
+?>
