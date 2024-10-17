@@ -1,11 +1,14 @@
 <?php
+//ob_start();
 session_start();
+//var_dump($_SESSION['username']); 
 
 if (!isset($_SESSION['username'])) {
-
-    header("Location: login.html");
+    header("Location: login.php");
     exit();
 }
+
+$id = $_SESSION['id'];
 
 require 'db_connect.php';
 
@@ -27,6 +30,7 @@ while ($stmt->fetch()) {
     $lab_ids[] = $lab_id;
 }
 $stmt->close();
+
 ?>
 
 <!DOCTYPE html>
@@ -37,7 +41,7 @@ $stmt->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Reservation</title>
     <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/index.css"> 
+    <link rel="stylesheet" href="css/index.css">
     <!-- importing styles for icons-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
@@ -48,8 +52,10 @@ $stmt->close();
     <!-- Header -->
     <?php include 'header.php'; ?>
 
+
+    <!-- Labs Block -->
     <div id="book-lab-block">
-    <?php
+        <?php
         /*if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) { // Printing the blocks for labs
                 echo '
@@ -124,7 +130,3 @@ $stmt->close();
 </body>
 
 </html>
-
-<?php
-$conn->close();
-?>

@@ -1,15 +1,17 @@
 <?php
+/*
 $servername = "localhost";
-$dbusername = "root";
-$password = "";
-$dbname = "las_db";
+$username = "root";  
+$password = "wyq001102";     
+$dbname = "las_db";  
 
-// Create connection
-$conn = new mysqli($servername, $dbusername, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+*/
+require 'db_connect.php';
 
 $lab_id = $_POST['lab_id'];
 $selected_date = $_POST['selected_date'];
@@ -32,7 +34,7 @@ function getUnavailableTimetables($conn, $lab_id, $selected_date) {
 
 $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $selected_date);
 
-// Timetable block
+// Generate timetable block
 $times = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
 for ($i = 0; $i < 4; $i++) {
     echo '<tr>';

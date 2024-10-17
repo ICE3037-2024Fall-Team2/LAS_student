@@ -6,16 +6,7 @@ if (!isset($_SESSION['username'])) {
     exit();
 }
 
-$servername = "localhost";
-$dbusername = "root";
-$password = "";
-$dbname = "las_db";
-
-$conn = new mysqli($servername, $dbusername, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
+require 'db_connect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $lab_id = $_POST['lab_id'];
@@ -23,11 +14,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $user_id = $_SESSION['id'];
     $selected_time = $_POST['selected_time']; 
 
-    // Insert the reservation into DB
+    // Insert the reservation into the database
     $sql = "INSERT INTO reservations (lab_id, user_id, date, time) VALUES ('$lab_id', '$user_id', '$selected_date', '$selected_time')";
 
     if ($conn->query($sql) === TRUE) {
-        // Go to profile.php after successful reservation
+        // Redirect to profile.php after successful reservation
         header("Location: profile.php");
         exit();
     } else {
@@ -36,5 +27,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 $conn->close();
-
-
+?>

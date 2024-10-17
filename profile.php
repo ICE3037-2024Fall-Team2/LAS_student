@@ -1,30 +1,30 @@
 <?php
 session_start();
 
+
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
 $toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
 unset($_SESSION['toastr']);
-//
-//BACKEND
-//implement info display 
-//and info acces+cahnge
-//using php
-//
-
-// Example values
-/*$student_id = "2022123456";
-$username = "john_doe";
-$phone_number = "010-1234-5678";
-$email = "john_doe@domain.com";
-$photo_path = null; // photo is null for now
-*/
+// Placeholder values for demonstration purposes
+//$student_id = "2022123456";
+//$username = "john_doe";
+//$phone_number = "010-1234-5678";
+//$email = "john_doe@domain.com";
+//$photo_path = null; // Assume photo is null for now, which means no photo is uploaded
 
 require 'db_connect.php';
 $id = $_SESSION['id'];
 
+//$sql = "SELECT * FROM user_info WHERE id = '$id' ";
+//$result = $conn->query($sql);
+//$check_sql = "SELECT * FROM user_info WHERE id = ?";
+//$result = $conn->prepare($check_sql);
+//$result->bind_param("s", $id);
+//$result->execute();
+//$result->store_result();
 
 //$phonenumber = $email = $photo_path = null;
 $phonenumber = $email = $photo_path = '';
@@ -48,6 +48,7 @@ if ($stmt->fetch()) {
 $stmt->close();
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -104,15 +105,14 @@ $conn->close();
             <?php } ?>
             <button id="edit-inf-butt" class="edit">Edit</button>
         </div>
-
         <!-- Reservations Info Section -->
         <div id="reservations-info">
             <h2>Upcoming Reservations</h2>
             <?php
-            // Placeholder for upcoming reservations from db
-            // get upcoming reservations
+            // Placeholder for upcoming reservations from the database
+            // Add SQL query here to fetch upcoming reservations
             // If found, print them
-            // else print 'No  reservations found.'
+            // else print 'No upcoming reservations found.'
 
             echo "<p>No upcoming reservations.</p>"; // sample text
             ?>
@@ -148,7 +148,6 @@ $conn->close();
         </div>
 
     </div>
-
     <!-- JavaScript for handling Edit and Save -->
     <script>
     document.getElementById('edit-inf-butt').addEventListener('click', function() {
@@ -220,8 +219,6 @@ $conn->close();
         });
     </script>
     <?php endif; ?>
-    
-</script>
 
 </body>
 
