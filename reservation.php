@@ -194,12 +194,12 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
             menu.classList.remove('active');
         }
 
-        // Close the dropdown if the user clicks outside of it
+        // Close the menu if the user clicks outside of it
         document.addEventListener('click', function(event) {
             var menu = document.getElementById('userMenu');
             var icon = document.querySelector('.fa-user');
         
-            // If the click is outside the dropdown and the icon, close the dropdown
+            // If outside, close the menu
             if (!menu.contains(event.target) && !icon.contains(event.target)) {
                 menu.classList.remove('active');
             }
@@ -208,16 +208,41 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
         $(document).ready(function () {
             // Handling date click
             $('.available-date').on('click', function () {
-                //BACKEND
-                //IMPLEMENT date click
-                //using js, ajax?
+                // Deselect all dates
+                $('.calendar-block td').removeClass('selected');
+
+                // Select clciked date
+                $(this).addClass('selected');
+                var selectedDate = $(this).data('date');
+                $('#selected_date').val(selectedDate);
+
+                // Fetch new timetables for that date
+                $.ajax({
+                    url: 'fetch_timetables.php',
+                    method: 'POST',
+                    data: {
+                        lab_id: '<?php echo $lab_id; ?>',
+                        selected_date: selectedDate
+                    },
+                    success: function (response) {
+                        $('#timetable').html(response);
+                        $('#reserve-button').prop('disabled', true).removeClass('enabled');
+                    }
+                });
             });
 
             // Handling time click
             $(document).on('click', '.available-time', function () {
-                //BACKEND
-                //IMPLEMENT time click
-                //using js, ajax?
+                // Deselect all times
+                $('.available-time').removeClass('selected-time');
+
+                // Select clicked time
+                $(this).addClass('selected-time');
+                var selectedTime = $(this).data('time');
+                $('#selected_time').val(selectedTime);
+                
+                // Enable reserve button
+                $('#reserve-button').prop('disabled', false).addClass('enabled');
             });
         });
     </script>
