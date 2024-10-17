@@ -37,16 +37,17 @@ $stmt->bind_param("s", $lab_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $stmt->close();
-
+$lab_capacity = 0;
 if ($result->num_rows > 0) {
     $lab = $result->fetch_assoc();
+    $lab_capacity = $lab['capacity'];
 } else {
     echo "Lab not found!";
     exit();
 }
 
 // Selects unavailable timetables from DB (for the chosen date)
-function getUnavailableTimetables($conn, $lab_id, $date)
+function getUnavailableTimetables($conn, $lab_id, $date, $lab_capacity)
 {
     /*$sql = "SELECT time FROM reservations WHERE lab_id='$lab_id' AND date='$date'";
     $result = $conn->query($sql);
@@ -57,20 +58,27 @@ function getUnavailableTimetables($conn, $lab_id, $date)
             $unavailable[] = $row['time'];
         }
     }*/
-    $sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
+    //$sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
+    $sql = "SELECT time, COUNT(*) as reservation_count 
+            FROM reservations 
+            WHERE lab_id = ? AND date = ?
+            GROUP BY time";
+    
     $stmt = $conn->prepare($sql);
     // Bind the parameters (lab_id as string, date as string)
     $stmt->bind_param("ss", $lab_id, $date);
     // Execute the statement
     $stmt->execute();
     // Bind the result
-    $stmt->bind_result($time);
+    $stmt->bind_result($time, $reservation_count);
     
     $unavailable = [];
     
     // Fetch all the unavailable times
     while ($stmt->fetch()) {
-        $unavailable[] = $time;
+        if ($reservation_count >= $lab_capacity) {
+            $unavailable[] = $time; 
+        }
     }
     
     // Close the statement
@@ -80,7 +88,7 @@ function getUnavailableTimetables($conn, $lab_id, $date)
 }
 
 // Get unavailable times for today
-$unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format('Y-m-d'));
+$unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format('Y-m-d'), $lab_capacity);
 ?>
 
 <!DOCTYPE html>

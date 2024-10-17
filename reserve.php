@@ -47,11 +47,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'message' => 'Error: Failed to create reservation.'
             );
         }
+        $stmt->close();
     }
 
     $check_stmt->close();
-    $stmt->close();
-    header("Location: profile.php");
+
+    //header("Location: reservation.php");
+    header("Location: reservation.php?lab_id=" . urlencode($lab_id));
     exit;
 }
 
