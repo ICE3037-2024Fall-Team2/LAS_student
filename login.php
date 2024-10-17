@@ -31,7 +31,7 @@ $conn->close();
     <link rel="stylesheet" href="css/login.css">
     <script>
         //BACKEND
-        //IMPLEMENT LOGIN
+        //IMPLEMENT validateLoginForm()
         //USING JS
     </script>
 </head>

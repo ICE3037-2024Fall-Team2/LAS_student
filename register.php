@@ -1,62 +1,74 @@
 <?php
-// link to mysql
 $servername = "localhost";
-$username = "root"; // mysql user root name
-$password = "your_mysql_password"; // root psw
-$dbname = "las_db"; // database name
+$username = "root";  
+$password = "";      
+$dbname = "las_db";  
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// check link
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// register
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $id = $_POST['id']; // studentid
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    
-    // check student id
-    if (preg_match("/^\d{10}$/", $id)) {
-        $hashed_password = password_hash($password, PASSWORD_DEFAULT); // 哈希密码
+//
+//BACKEND
+//IMPLEMENT REGISTER
+//USING PHP
+//
 
-        // add item to table
-        $sql = "INSERT INTO users (id, username, password) VALUES ('$id', '$username', '$hashed_password')";
-
-        if ($conn->query($sql) === TRUE) {
-            echo "Registration successful!";
-        } else {
-            echo "Error: " . $sql . "<br>" . $conn->error;
-        }
-    } else {
-        echo "Student ID must be exactly 10 digits!";
-    }
-}
+$conn->close();
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
+    <link rel="stylesheet" href="css/login.css">
+    <script>
+        //BACKEND
+        //IMPLEMENT validateRegistrationForm()
+        //USING JS
+    </script>
 </head>
+
 <body>
-    <h2>Register</h2>
-    <form action="register.php" method="post">
-        <label for="id">Student ID:</label><br>
-        <input type="text" id="id" name="id" required><br><br>
+    <div id="header">
+        <h1 id="logoKo" class="header_logo"><img src="img/logo.png?v=4"></h1>
+        <h2 id="logoTitle"> Registration </h2>
+    </div>
 
-        <label for="username">Username:</label><br>
-        <input type="text" id="username" name="username" required><br><br>
+    <div id="login_wrapper">
+        <form action="register.php" method="post" onsubmit="return validateRegistrationForm()">
+            <div class="loginForm">
+                <div class="loginBox">
+                    <div class="inputText">
+                        <label for="id">Student ID</label>
+                        <input id="id" type="text" name="id" value="" autocomplete="off" placeholder="Student ID" required>
+                    </div>
+                    <div class="inputText">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" name="username" value="" autocomplete="off" placeholder="Username" required>
+                    </div>
+                    <div class="inputText">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" name="password" autocomplete="new-password" placeholder="Password" required>
+                    </div>
+                </div>
+                <button type="submit" class="loginBtn" id="btnLoginBtn"><span id="btnLogin">REGISTER</span></button>
+            </div>
+        </form>
+    </div>
 
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password" required><br><br>
-
-        <input type="submit" value="Register">
-    </form>
+    <div class="footerBtn">
+        <div class="btnLink">
+            <ul>
+                <div>Already have an account? <a href="login.php">Go to login</a></div>
+            </ul>
+        </div>
+    </div>
 </body>
+
 </html>
