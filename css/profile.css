@@ -1,0 +1,123 @@
+/* General layout for profile page */
+#profile-content {
+    width: 90%;
+    margin: 20px auto;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* Section styling */
+#profile-content > div {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e0e0e0;
+}
+
+/* Section title */
+#profile-content h2 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    border-bottom: 2px solid #69ca00;
+    padding-bottom: 10px;
+}
+
+/* Account Info styling */
+#account-info p {
+    font-size: 18px;
+    margin: 10px 0;
+    color: #555;
+}
+
+#account-info img.profile-photo {
+    display: block;
+    margin-top: 15px;
+    max-width: 150px;
+    border-radius: 50%;
+    border: 2px solid #69ca00;
+}
+
+#account-info form {
+    margin-top: 15px;
+}
+
+#acc-inf-butt {
+    padding: 5px 10px; 
+    cursor: pointer; 
+    background-color: #508e0d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#acc-inf-butt:hover {
+    background-color: #3d6b0b;
+}
+
+/* Reservations tables */
+#reservations-info, #past-reservations {
+    font-size: 16px;
+}
+
+#reservations-info p, #past-reservations p {
+    margin: 10px 0;
+    color: #555;
+}
+
+#reservations-info table, #past-reservations table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#reservations-info th, #past-reservations th, 
+#reservations-info td, #past-reservations td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+/* Placeholder for no reservations */
+#reservations-info p, #past-reservations p {
+    text-align: center;
+    color: #888;
+}
+
+/* Change Password form */
+#change-password form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#change-password label {
+    font-size: 18px;
+    color: #333;
+}
+
+#change-password input {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+#change-password button {
+    padding: 10px;
+    background-color: #508e0d;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#change-password button:hover {
+    background-color: #3d6b0b;
+}
