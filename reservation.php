@@ -153,10 +153,19 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
             <div class="timetable-block">
                 <table id="timetable">
                     <?php
-                    //BACKEND
-                    //print timetables
-                    //if exists in DB -< unavailable
-                    //if not, make available
+                    $times = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
+                    for ($i = 0; $i < 4; $i++) {
+                        echo '<tr>';
+                        for ($j = 0; $j < 3; $j++) {
+                            $time = $times[$i * 3 + $j];
+                            if (in_array($time, $unavailableTimetables)) {
+                                echo '<td class="unavailable-time">' . $time . '</td>';
+                            } else {
+                                echo '<td class="available-time" data-time="' . $time . '">' . $time . '</td>';
+                            }
+                        }
+                        echo '</tr>';
+                    }
                     ?>
                 </table>
             </div>
