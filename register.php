@@ -16,11 +16,29 @@ if ($conn->connect_error) {
 */
 require 'db_connect.php';
 
-//
-//BACKEND
-//IMPLEMENT REGISTER
-//USING PHP
-//
+// Handle register
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $id = $_POST['id'];
+    $username = $_POST['username'];
+    $password = $_POST['password'];
+
+    // Validate student ID format
+    if (preg_match("/^\d{10}$/", $id)) {
+        // Hash the password using bcrypt (for protection)
+        $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+        // Add user to the users table
+        $sql = "INSERT INTO users (id, username, password) VALUES ('$id', '$username', '$hashed_password')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo "Registration successful!";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
+    } else {
+        echo "Student ID must be exactly 10 digits!";
+    }
+}
 
 $conn->close();
 ?>
