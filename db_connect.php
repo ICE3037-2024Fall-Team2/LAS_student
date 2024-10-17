@@ -2,7 +2,7 @@
 // Database connection parameters
 $servername = "localhost";
 $username = "root";
-$password = "";
+$password = "wyq001102";
 $dbname = "las_db";
 
 // Create connection
