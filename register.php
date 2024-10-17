@@ -53,9 +53,20 @@ $conn->close();
     <link rel="stylesheet" href="css/style.css"> 
     
     <script>
-        //BACKEND
-        //IMPLEMENT validateRegistrationForm()
-        //USING JS
+        function validateRegistrationForm() {
+            var id = document.getElementById('id').value;
+            var username = document.getElementById('username').value;
+            var password = document.getElementById('password').value;
+            if (id === "" || username === "" || password === "") {
+                alert("Please fill in all fields.");
+                return false;
+            }
+            if (!/^\d{10}$/.test(id)) {
+                alert("Student ID must be exactly 10 digits.");
+                return false;
+            }
+            return true;
+        }
     </script>
 </head>
 
