@@ -1,5 +1,10 @@
 # LAS_student
 Lab reservation website for students.
+## Roles:
+### Frontend
+> Igor
+### Backend
+> Minh and Wei
 
 ## How to Run:
 1. **Download XAMPP**:  
