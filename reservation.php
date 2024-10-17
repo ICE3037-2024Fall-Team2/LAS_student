@@ -21,42 +21,47 @@ if ($conn->connect_error) {
 */
 require 'db_connect.php';
 
-//
-//BACKEND
-//Process the form submission
-//not updated yet, fix the code below
-//
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $student_id = $_SESSION['id'];
-    $lab_name = $_POST['lab_name'];
-    $reservation_time = str_replace('T', ' ', $_POST['reservation_time']); // Convert datetime-local to MySQL format
+date_default_timezone_set('Asia/Seoul');
+$today = new DateTime();
+$dayOfWeek = $today->format('w'); // 0 = Sun, 6 = Sat
 
-    // Check for conflicts (optional)
-    $check_sql = "SELECT * FROM reservations WHERE lab_name = ? AND reservation_time = ?";
-    $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("ss", $lab_name, $reservation_time);
-    $check_stmt->execute();
-    $result = $check_stmt->get_result();
+$weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
-    if ($result->num_rows > 0) {
-        echo "Error: A reservation already exists for this lab and time.";
-    } else {
-        // Prepare and bind SQL statement to prevent SQL injection
-        $stmt = $conn->prepare("INSERT INTO reservations (student_id, lab_name, reservation_time) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $student_id, $lab_name, $reservation_time);
-
-        if ($stmt->execute()) {
-            echo "Reservation successful!";
-        } else {
-            echo "Error: " . $stmt->error;
-            echo "<br>Debug info: student_id=$student_id, lab_name=$lab_name, reservation_time=$reservation_time";
-        }
-        $stmt->close();
-    }
-    $check_stmt->close();
+// Fetch lab details
+$lab_id = isset($_GET['lab_id']) ? $_GET['lab_id'] : null;
+if ($lab_id === null) {
+    echo "Invalid lab selection.";
+    exit();
 }
 
-$conn->close();
+//Select chosen lab info
+$sql = "SELECT * FROM labs WHERE lab_id='$lab_id'";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $lab = $result->fetch_assoc();
+} else {
+    echo "Lab not found!";
+    exit();
+}
+
+// Selects unavailable timetables from DB (for the chosen date)
+function getUnavailableTimetables($conn, $lab_id, $date)
+{
+    $sql = "SELECT time FROM reservations WHERE lab_id='$lab_id' AND date='$date'";
+    $result = $conn->query($sql);
+
+    $unavailable = [];
+    if ($result->num_rows > 0) {
+        while ($row = $result->fetch_assoc()) {
+            $unavailable[] = $row['time'];
+        }
+    }
+    return $unavailable;
+}
+
+// Get unavailable times for today
+$unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format('Y-m-d'));
 ?>
 
 <!DOCTYPE html>
@@ -69,36 +74,18 @@ $conn->close();
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/index.css"> 
     <link rel="stylesheet" href="css/reservation.css"> 
-
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- jquery? -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 
 <body>
-    
-    <div id="header">
-        <div class="left">
-            <img src="img/mini-logo-color2.png" alt="Logo" class="logo-circle">
-            <span>Lab Reservation</span>
-        </div>
-        <div class="right">
-            <i class="fa-solid fa-user" onclick="toggleMenu()"></i>
-            <div class="dropdown" id="userMenu">
-                <i class="fa-solid fa-x close-dropdown" onclick="closeMenu()"></i>
-                <a href="profile.php#account-info">Account Info</a>
-                <a href="profile.php#reservations-info">Reservations</a>
-                <a href="profile.php#past-reservations">Past Reservations</a>
-                <a href="profile.php#change-password">Change Password</a>
-                <a href="login.php" class="logout">Logout</a>
-            </div>
-        </div>
-    </div>
+    <!-- Header -->
+    <?php include 'header.php'; ?>
 
 
-    <!-- Main Content -->
+    <!-- Main Block -->
     <div id="reservation-lab-block">
         
         <div class="left-half">
@@ -120,12 +107,26 @@ $conn->close();
                         <?php } ?>
                     </tr>
                     <tr>
-                        <!-- 
-                        BACKEND 
-                        Implement calendar
-                        using php                
-                        -->
+                        <?php
+                        // Get the date of sunday before
+                        $startOfWeek = clone $today;
+                        $startOfWeek->modify('-' . $dayOfWeek . ' days');  // Go back to the previous Sunday
+                        
+                        // Display weekday from Sunday
+                        for ($i = 0; $i < 7; $i++) {
+                            $currentDate = clone $startOfWeek;
+                            $currentDate->modify('+' . $i . ' days');
+                            $formattedDate = $currentDate->format('Y-m-d');
 
+                            if ($currentDate == $today) {
+                                echo '<td class="available-date selected" data-date="' . $formattedDate . '">' . $currentDate->format('d') . '</td>';
+                            } elseif ($currentDate < $today) {
+                                echo '<td class="unavailable-date">' . $currentDate->format('d') . '</td>';
+                            } else {
+                                echo '<td class="available-date" data-date="' . $formattedDate . '">' . $currentDate->format('d') . '</td>';
+                            }
+                        }
+                        ?>
                     </tr>
                 </table>
             </div>
@@ -134,10 +135,19 @@ $conn->close();
             <div class="timetable-block">
                 <table id="timetable">
                     <?php
-                    //BACKEND
-                    //print timetables
-                    //if exists in DB -< unavailable
-                    //if not, make available
+                    $times = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
+                    for ($i = 0; $i < 4; $i++) {
+                        echo '<tr>';
+                        for ($j = 0; $j < 3; $j++) {
+                            $time = $times[$i * 3 + $j];
+                            if (in_array($time, $unavailableTimetables)) {
+                                echo '<td class="unavailable-time">' . $time . '</td>';
+                            } else {
+                                echo '<td class="available-time" data-time="' . $time . '">' . $time . '</td>';
+                            }
+                        }
+                        echo '</tr>';
+                    }
                     ?>
                 </table>
             </div>
@@ -158,23 +168,65 @@ $conn->close();
     </div>
 
     <script>
-        //implemented later:
-        //function toggleMenu()
-        //function closeMenu()
+        /*function toggleMenu() {
+            var menu = document.getElementById('userMenu');
+            menu.classList.toggle('active');
+        }
+
+        function closeMenu() {
+            var menu = document.getElementById('userMenu');
+            menu.classList.remove('active');
+        }
+
+        // Close the menu if the user clicks outside of it
+        document.addEventListener('click', function(event) {
+            var menu = document.getElementById('userMenu');
+            var icon = document.querySelector('.fa-user');
+        
+            // If outside, close the menu
+            if (!menu.contains(event.target) && !icon.contains(event.target)) {
+                menu.classList.remove('active');
+            }
+        });*/
         
         $(document).ready(function () {
             // Handling date click
             $('.available-date').on('click', function () {
-                //BACKEND
-                //IMPLEMENT date click
-                //using js, ajax?
+                // Deselect all dates
+                $('.calendar-block td').removeClass('selected');
+
+                // Select clciked date
+                $(this).addClass('selected');
+                var selectedDate = $(this).data('date');
+                $('#selected_date').val(selectedDate);
+
+                // Fetch new timetables for that date
+                $.ajax({
+                    url: 'fetch_timetables.php',
+                    method: 'POST',
+                    data: {
+                        lab_id: '<?php echo $lab_id; ?>',
+                        selected_date: selectedDate
+                    },
+                    success: function (response) {
+                        $('#timetable').html(response);
+                        $('#reserve-button').prop('disabled', true).removeClass('enabled');
+                    }
+                });
             });
 
             // Handling time click
             $(document).on('click', '.available-time', function () {
-                //BACKEND
-                //IMPLEMENT time click
-                //using js, ajax?
+                // Deselect all times
+                $('.available-time').removeClass('selected-time');
+
+                // Select clicked time
+                $(this).addClass('selected-time');
+                var selectedTime = $(this).data('time');
+                $('#selected_time').val(selectedTime);
+                
+                // Enable reserve button
+                $('#reserve-button').prop('disabled', false).addClass('enabled');
             });
         });
     </script>
