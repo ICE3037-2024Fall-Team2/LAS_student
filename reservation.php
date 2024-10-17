@@ -59,25 +59,31 @@ function getUnavailableTimetables($conn, $lab_id, $date, $lab_capacity)
         }
     }*/
     //$sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
-    $sql = "SELECT time, COUNT(*) as reservation_count 
+    /*$sql = "SELECT time, COUNT(*) as reservation_count 
             FROM reservations 
             WHERE lab_id = ? AND date = ?
             GROUP BY time";
-    
+    */
+    $user_id =  $_SESSION['id'];
+    $sql = "SELECT time, COUNT(*) as reservation_count, 
+                   SUM(CASE WHEN user_id = ? THEN 1 ELSE 0 END) as user_reserved
+            FROM reservations 
+            WHERE lab_id = ? AND date = ?
+            GROUP BY time";
+
     $stmt = $conn->prepare($sql);
-    // Bind the parameters (lab_id as string, date as string)
-    $stmt->bind_param("ss", $lab_id, $date);
-    // Execute the statement
+    // Bind the parameters (user_id, lab_id as string, date as string)
+    $stmt->bind_param("sss", $user_id, $lab_id, $date);
     $stmt->execute();
-    // Bind the result
-    $stmt->bind_result($time, $reservation_count);
+    $stmt->bind_result($time, $reservation_count, $user_reserved);
     
     $unavailable = [];
     
     // Fetch all the unavailable times
     while ($stmt->fetch()) {
-        if ($reservation_count >= $lab_capacity) {
-            $unavailable[] = $time; 
+        // 如果预约人数已经达到实验室容量，或者当前用户已经预约了这个时间段
+        if ($user_reserved != 0 || $reservation_count >= $lab_capacity) {
+            $unavailable[] = $time;  // 标记时间为不可用
         }
     }
     
