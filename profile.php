@@ -51,7 +51,7 @@ $stmt->close();
 date_default_timezone_set('Asia/Seoul');
 $today = new DateTime();
 $today_str = $today->format('Y-m-d');
-$future_sql = "SELECT lab_id, date, time FROM reservations WHERE user_id = ? AND date >= ? ORDER BY date, time";
+$future_sql = "SELECT reservation_id, lab_id, date, time FROM reservations WHERE user_id = ? AND date >= ? ORDER BY date, time";
 $future_stmt = $conn->prepare($future_sql);
 $future_stmt->bind_param("ss", $_SESSION['id'], $today_str);
 $future_stmt->execute();
@@ -119,7 +119,7 @@ $past_result = $past_stmt->get_result();
                     <button type="submit">Upload</button>
                 </form>-->
             <?php } else { ?>
-                <img src="<?php echo htmlspecialchars($photo_path); ?>" alt="Profile Photo" class="profile-photo">
+                <p><strong>Photo:</strong><img src="<?php echo htmlspecialchars($photo_path); ?>" alt="Profile Photo" class="profile-photo">
             <?php } ?>
             <button id="edit-inf-butt" class="edit">Edit</button>
         </div>
@@ -144,9 +144,10 @@ $past_result = $past_stmt->get_result();
                         <td><?php echo htmlspecialchars($row['time']); ?></td>
                         <td>
                             <form action="generate_qr.php" method="post">
-                                <input type="hidden" name="lab_id" value="<?php echo $row['lab_id']; ?>">
+                                <!--<input type="hidden" name="lab_id" value="<?php echo $row['lab_id']; ?>">
                                 <input type="hidden" name="date" value="<?php echo $row['date']; ?>">
-                                <input type="hidden" name="time" value="<?php echo $row['time']; ?>">
+                                <input type="hidden" name="time" value="<?php echo $row['time']; ?>">-->
+                                <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>" >
                                 <button type="submit" class="edit" id="qr-butt">View QR Code</button>
                             </form>
                         </td>
