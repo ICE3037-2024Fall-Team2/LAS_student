@@ -2,7 +2,7 @@
 Lab reservation website for students.
 ## Roles:
 ### Frontend
-> Igor
+> Igor and Nhi
 ### Backend
 > Minh and Wei
 
