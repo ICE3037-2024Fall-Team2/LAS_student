@@ -79,7 +79,7 @@ $conn->close();
                 <a href="profile.php#reservations-info">Reservations</a>
                 <a href="profile.php#past-reservations">Past Reservations</a>
                 <a href="profile.php#change-password">Change Password</a>
-                <a href="login.php" class="logout">Logout</a>
+                <a href="logout.php" class="logout">Logout</a>
             </div>
         </div>
     </div>
