@@ -1,17 +1,19 @@
 <?php
 session_start();
 
+/*
 $servername = "localhost";
-$username = "root"; 
-$password = "your_mysql_password"; 
-$dbname = "las_db"; 
+$username = "root";  
+$password = "wyq001102";     
+$dbname = "las_db";  
 
 $conn = new mysqli($servername, $username, $password, $dbname);
-
 
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+*/
+require 'db_connect.php';
 
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {

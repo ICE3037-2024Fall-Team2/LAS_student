@@ -1,16 +1,18 @@
 <?php
 // link to mysql
+/*
 $servername = "localhost";
-$username = "root"; // mysql user root name
-$password = "your_mysql_password"; // root psw
-$dbname = "las_db"; // database name
+$username = "root";  
+$password = "wyq001102";     
+$dbname = "las_db";  
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
-// check link
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
+*/
+require 'db_connect.php';
 
 // register
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
