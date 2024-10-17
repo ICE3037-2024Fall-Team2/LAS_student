@@ -133,6 +133,7 @@ $past_result = $past_stmt->get_result();
                 <th>Date</th>
                 <th>Time</th>
                 <th>generate QR Code</th>
+                <th>Cancel</th>
             </tr>
         </thead>
         <tbody>
@@ -149,6 +150,12 @@ $past_result = $past_stmt->get_result();
                                 <input type="hidden" name="time" value="<?php echo $row['time']; ?>">-->
                                 <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>" >
                                 <button type="submit" class="edit" id="qr-butt">View QR Code</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form action="rsv_cancel.php" method="post">
+                                <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>" >
+                                <button type="submit" class="edit" id="cancel-butt">Cancel</button>
                             </form>
                         </td>
                     </tr>

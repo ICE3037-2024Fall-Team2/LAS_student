@@ -16,9 +16,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $verified = false;
 
 
-    $check_sql = "SELECT * FROM reservations WHERE lab_id = ? AND user_id = ? AND date = ? AND time = ?";
+    $check_sql = "SELECT * FROM reservations WHERE user_id = ? AND date = ? AND time = ?";
     $check_stmt = $conn->prepare($check_sql);
-    $check_stmt->bind_param("ssss", $lab_id, $user_id, $selected_date, $selected_time);
+    $check_stmt->bind_param("sss", $user_id, $selected_date, $selected_time);
     $check_stmt->execute();
     $check_stmt->store_result();
 

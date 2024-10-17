@@ -7,7 +7,7 @@ if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
-
+unset($_SESSION['toastr']);
 $id = $_SESSION['id'];
 
 require 'db_connect.php';
