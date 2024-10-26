@@ -1,0 +1,8 @@
+Flask
+flask-cors
+mysql-connector-python
+opencv-python-headless
+deepface==0.0.93
+numpy
+tensorflow==2.6.0 
+tf-keras==2.6.0
