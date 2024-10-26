@@ -110,7 +110,7 @@ $past_result = $past_stmt->get_result();
             </p>
             <!-- Photo Upload / Display -->
             <?php if ($photo_path == null) { ?>
-                <p><strong>Photo:</strong><img src="img/blank-profile.webp" alt="Profile Photo" class="profile-photo">
+                <p><strong>Photo:</strong><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
                 <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
                     <label for="photo">Upload your photo:</label>
                     <input type="file" name="photo" id="photo"> 

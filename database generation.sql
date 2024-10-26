@@ -48,3 +48,17 @@ CREATE TABLE `lab_stu` (
   FOREIGN KEY (lab_id) REFERENCES labs(lab_id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+CREATE TABLE `admin` (
+  `admin_id` varchar(10) NOT NULL PRIMARY KEY,
+  `admin_name` varchar(50) NOT NULL UNIQUE,
+  `password` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+
+CREATE TABLE `user_img` (
+  `id` varchar(10) NOT NULL,
+  `photo_path` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (id),         			 -- PK
+  FOREIGN KEY (id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+

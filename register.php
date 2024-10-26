@@ -48,14 +48,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Bind the parameters to the prepared statement
         $stmt->bind_param("sss", $id, $username, $hashed_password);
 
-        // Execute the prepared statement
-        if ($stmt->execute()) {
-            // Registration successful - redirect to login page
-            // Use session to pass success message (no need for output before header())
+        // Add user to the user_info table (only id and username)
+        $sql_user_info = "INSERT INTO user_info (id, username) VALUES (?, ?)";
+        $stmt_user_info = $conn->prepare($sql_user_info);
+        $stmt_user_info->bind_param("ss", $id, $username);
+
+        // Execute the prepared statements
+        if ($stmt_users->execute() && $stmt_user_info->execute()) {
+            // Registration successful - set toastr success message
             $_SESSION['toastr'] = array(
                 'type' => 'success',
                 'message' => 'Sign Up successful!'
             );
+            header("Location: login.php");
+            exit();
             // Ensure script stops after header redirection
         } else {
             // Handle errors during the execution
@@ -70,6 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit(); 
 
         // Close the prepared statement
+        $stmt_user_info->close();
         $stmt->close();
     } else {
         // Show error message for invalid ID format
