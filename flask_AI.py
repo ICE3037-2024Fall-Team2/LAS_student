@@ -16,7 +16,7 @@ model = DeepFace.build_model(model_name)
 db = mysql.connector.connect(
     host="localhost",
     user="root",
-    password="wyq001102",
+    password="",
     database="las_db"
 )
 cursor = db.cursor()
