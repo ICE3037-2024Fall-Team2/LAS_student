@@ -60,6 +60,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $sql = "UPDATE user_info SET username = ?, phonenumber = ?, email = ?, photo_path = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("sssss", $username, $phone, $email, $photo_path, $id);
+
+            $check_img_sql = "SELECT 1 FROM user_img WHERE id = ?";
+            $check_img_stmt = $conn->prepare($check_img_sql);
+            $check_img_stmt->bind_param("s", $id);
+            $check_img_stmt->execute();
+            $check_img_stmt->store_result();
+
+            if ($check_img_stmt->num_rows > 0) {
+                // If entry exists, update photo_path
+                $update_img_sql = "UPDATE user_img SET photo_path = ? WHERE id = ?";
+                $update_img_stmt = $conn->prepare($update_img_sql);
+                $update_img_stmt->bind_param("ss", $photo_path, $id);
+                $update_img_stmt->execute();
+                $update_img_stmt->close();
+            } else {
+                // If entry does not exist, insert new record
+                $insert_img_sql = "INSERT INTO user_img (id, photo_path) VALUES (?, ?)";
+                $insert_img_stmt = $conn->prepare($insert_img_sql);
+                $insert_img_stmt->bind_param("ss", $id, $photo_path);
+                $insert_img_stmt->execute();
+                $insert_img_stmt->close();
+            }
+
+            $check_img_stmt->close();
+
         } else {
 
             $sql = "UPDATE user_info SET username = ?, phonenumber = ?, email = ? WHERE id = ?";
