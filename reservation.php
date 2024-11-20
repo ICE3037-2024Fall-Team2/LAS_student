@@ -105,7 +105,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation - <?php echo htmlspecialchars($lab['lab_name']); ?></title>
     <!-- Toastr -->
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 
