@@ -1,18 +1,6 @@
 <?php
 session_start();
-/*
-$servername = "localhost";
-$username = "root";  
-$password = "";     
 
-$dbname = "las_db";  
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-*/
 require 'db_connect.php';
 
 // Handle register
@@ -25,23 +13,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (preg_match("/^\d{10}$/", $id)) {
         // Hash the password using bcrypt (for protection)
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
-
-        // Add user to the users table
-        /*$sql = "INSERT INTO users (id, username, password) VALUES ('$id', '$username', '$hashed_password')";
-
-        if ($conn->query($sql) === TRUE) {
-            // Registration successful - show an alert
-            echo "<script>alert('Registration successful!');</script>";
-            header("Location: login.php");
-        } else {
-            // Show error message in an alert
-            $errorMessage = $conn->error;
-            echo "<script>alert('Error: " . addslashes($errorMessage) . "');</script>";
-        }
-    } else {
-        // Show error message for invalid ID in an alert
-        echo "<script>alert('Student ID must be exactly 10 digits!');</script>";
-    }*/
         $sql = "INSERT INTO users (id, username, password) VALUES (?, ?, ?)";
         $stmt = $conn->prepare($sql);
 
@@ -54,14 +25,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt_user_info->bind_param("ss", $id, $username);
 
         // Execute the prepared statements
-        if ($stmt_users->execute() && $stmt_user_info->execute()) {
+        if ($stmt->execute() && $stmt_user_info->execute()) {
             // Registration successful - set toastr success message
             $_SESSION['toastr'] = array(
                 'type' => 'success',
                 'message' => 'Sign Up successful!'
             );
-            header("Location: login.php");
-            exit();
             // Ensure script stops after header redirection
         } else {
             // Handle errors during the execution
@@ -98,7 +67,7 @@ $conn->close();
     <title>Register</title>
     <link rel="stylesheet" href="css/style.css"> 
     <!-- Toastr -->
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 

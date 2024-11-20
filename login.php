@@ -2,18 +2,7 @@
 session_start();
 $toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
 unset($_SESSION['toastr']);
-/*
-$servername = "localhost";
-$username = "root";  
-$password = "";     
-$dbname = "las_db";  
 
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-*/
 require 'db_connect.php';
 
 // Handle login
@@ -74,7 +63,7 @@ $conn->close();
     <title>SKKU LAS - Login</title>
     <link rel="stylesheet" href="css/style.css">
     <!-- Toastr -->
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 

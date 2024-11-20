@@ -16,15 +16,9 @@ unset($_SESSION['toastr']);
 //$photo_path = null; // Assume photo is null for now, which means no photo is uploaded
 
 require 'db_connect.php';
+require 's3_connect.php';
 $id = $_SESSION['id'];
 
-//$sql = "SELECT * FROM user_info WHERE id = '$id' ";
-//$result = $conn->query($sql);
-//$check_sql = "SELECT * FROM user_info WHERE id = ?";
-//$result = $conn->prepare($check_sql);
-//$result->bind_param("s", $id);
-//$result->execute();
-//$result->store_result();
 
 //$phonenumber = $email = $photo_path = null;
 $phonenumber = $email = $photo_path = '';
@@ -34,18 +28,21 @@ $stmt->bind_param("s", $id);
 $stmt->execute();
 
 $stmt->bind_result($phonenumber, $email, $photo_path);
-/*if ($result->num_rows > 0) {
-    $row = $result->fetch_assoc();
-    $phonenumber = $row['phonenumber'];
-    $email = $row['email'];
-    //$photo_path = !empty($row['photo_path']) ? $row['photo_path'] : "Please complete your information.";
-    $photo_path = $row['photo_path'];
-}*/
+
 
 if ($stmt->fetch()) {
 } 
 
+
 $stmt->close();
+
+$bucketName = "lrsys-bucket";
+try {
+    $presignedUrl = generatePresignedUrl($bucketName, $photo_path, '+60 minutes');
+
+} catch (Exception $e) {
+    echo "Error: " . $e->getMessage();
+}
 
 //upcoming reservation
 date_default_timezone_set('Asia/Seoul');
@@ -76,7 +73,7 @@ $past_result = $past_stmt->get_result();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
     <!-- Toastr -->
-    <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 
@@ -109,8 +106,9 @@ $past_result = $past_stmt->get_result();
                 <?php echo !empty($email) ? htmlspecialchars($email) : 'Please complete your information'; ?>
             </p>
             <!-- Photo Upload / Display -->
-            <?php if ($photo_path == null) { ?>
+            <?php if ($presignedUrl == null) { ?>
                 <p><strong>Photo:</strong><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
+
                 <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
                     <label for="photo">Upload your photo:</label>
                     <input type="file" name="photo" id="photo"> 
@@ -119,7 +117,7 @@ $past_result = $past_stmt->get_result();
                     <button type="submit">Upload</button>
                 </form>-->
             <?php } else { ?>
-                <p><strong>Photo:</strong><img src="<?php echo htmlspecialchars($photo_path); ?>" alt="Profile Photo" class="profile-photo">
+                <p><strong>Photo:</strong><img src="<?php echo htmlspecialchars($presignedUrl); ?>" alt="Profile Photo" class="profile-photo">
             <?php } ?>
             <button id="edit-inf-butt" class="edit">Edit</button>
         </div>

@@ -1,6 +1,10 @@
 <?php
 session_start();
-require 'db_connect.php'; 
+require 'db_connect.php';
+require 's3_update.php'; // Include the S3 upload script
+
+$bucketName = "lrsys-bucket";
+$imgPathPrefix = "user_photo/"; 
 
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
@@ -35,14 +39,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
         $photo_tmp_name = $_FILES['photo']['tmp_name'];
         $file_extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
-        $photo_name = $_SESSION['id'] . '.' . $file_extension;
-        $photo_path = "user_photo/" . $photo_name;
-
-        if (!move_uploaded_file($photo_tmp_name, $photo_path)) {
+    
+        // Use the current timestamp and user ID to generate a unique name
+        //$photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension;
+        $photo_name = $_SESSION['id'] . "." . $file_extension;
+        $s3Key = $imgPathPrefix . $photo_name;
+    
+        try {
+            // Upload the file to S3
+            $uploadedKey = uploadToS3($photo_tmp_name, $bucketName, $s3Key);
+    
+            // Update the photo path with the S3 key
+            $photo_path = $uploadedKey;
+        } catch (Exception $e) {
             echo "<script>
-                    alert('Photo upload failed.');
+                    alert('Photo upload failed: " . $e->getMessage() . "');
                     window.history.back();
-                </script>";
+                  </script>";
             $photo_path = null;
         }
     }
