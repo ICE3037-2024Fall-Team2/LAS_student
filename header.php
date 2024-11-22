@@ -6,7 +6,7 @@
     </div>
     </a>
     <div class="right">
-        <i class="fa-solid fa-user" onclick="toggleMenu()"></i>
+        <i class="fa-solid fa-bars" onclick="toggleMenu()"></i>
         <div class="dropdown" id="userMenu">
             <i class="fa-solid fa-x close-dropdown" onclick="closeMenu()"></i>
             <a href="profile.php#account-info">Account Info</a>
