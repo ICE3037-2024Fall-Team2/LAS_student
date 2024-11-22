@@ -178,8 +178,8 @@ $conn->close();
         <form action="ras_admin_register.php" method="post">
             <label for="admin_id">Admin ID:</label>
             <input type="text" name="admin_id" id="admin_id"  value="" 
-                        pattern="[0-9]{10}"
-                        title="ID must be exactly 10 digits." required><br>
+                        pattern="1[0-9]{9}"
+                        title="Admin ID must start with '1' and be exactly 10 digits." required><br>
             <label for="admin_name"> Name:</label>
             <input type="text" name="admin_name" id="admin_name" required><br>
             <label for="password">Password:</label>
