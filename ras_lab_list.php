@@ -196,21 +196,21 @@ $conn->close();
     <h2>Update Lab</h2>
     <form method="POST" action="ras_lab_update.php" >
         <div class="fill">
-            <label for="lab_id">lab id:</label>
+            <label for="lab_id">ID:</label>
             <input type="text" id="add_id" name="add_id" value="" 
                         pattern="[0-9]{5}"
                         title="Lab ID must be exactly 5 digits." required>
-            <label for="lab_name">lab name:</label>
+            <label for="lab_name">Name:</label>
             <input type="text" id="lab_name" name="lab_name">
-            <label for="address">lab address:</label>
+            <label for="address">Address:</label>
             <input type="text" id="address" name="address" >
         </div>
         <div class="fill">
-        <label for="capacity">lab capaity:</label>
+        <label for="capacity">Capacity:</label>
         <input type="text" id="capacity" name="capacity"  
                         pattern="[0-9]+"
                         title="capacity must be number.">
-            <label for="photo">lab photo:</label>
+            <label for="photo">Photo:</label>
             <input type="file" name="photo" id="photo" accept="image/*">
             <button type="submit">Update</button>
         </div>
