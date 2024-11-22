@@ -119,6 +119,6 @@ a {
         </div>
         <button type="submit">Confirm</button>
     </form>
-    <div><a href="ras_admin_dash.php">Go back to admin menu</a></div>
+    <div><a href="ras_admin_dash.php">Go back to dashboad</a></div>
 </body>
 </html>

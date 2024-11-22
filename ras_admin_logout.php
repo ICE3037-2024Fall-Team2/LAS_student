@@ -8,6 +8,6 @@ $_SESSION = array();
 session_destroy();
 
 // Redirect to login page
-header('Location: ras_admin_login.php');
+header('Location: login.php');
 exit;
 ?>

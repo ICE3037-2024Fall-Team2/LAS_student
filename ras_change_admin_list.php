@@ -172,7 +172,7 @@ $conn->close();
 </head>
 <body>
     <h2>Admin Management</h2>
-    <div><a href="ras_admin_dash.php">Go back to admin menu</a></div>
+    <div><a href="ras_admin_dash.php">Go back to dashboad</a></div>
 
     <div>
         <form action="ras_admin_register.php" method="post">

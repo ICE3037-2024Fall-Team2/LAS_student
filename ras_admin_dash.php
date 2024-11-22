@@ -3,7 +3,7 @@ session_start();
 
 // Redirect if the admin is not logged in
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: ras_admin_login.php');
+    header('Location: login.php');
     exit;
 }
 
@@ -14,7 +14,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Admin Dashboard</title>
+    <title>SKKU LRS - Admin Dashboard</title>
     <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
 
     <style>
@@ -70,6 +70,14 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             background-color: #0B3D0B;
         }
 
+        /* Style for Logout button */
+        a.logout {
+            background-color: #d9534f; 
+        }
+
+        a.logout:hover {
+            background-color: #c9302c;
+        }
     </style>
 </head>
 <body>
@@ -81,7 +89,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
             <li><a href="ras_student_list.php">Student Management</a></li>
             <li><a href="ras_lab_list.php">Lab Management</a></li>
             <li><a href="ras_change_admin_list.php">Admin Management</a></li>
-            <li><a href="ras_admin_logout.php">Logout</a></li>
+            <li><a href="ras_admin_logout.php" class="logout">Logout</a></li>
         </ul>
     </div>
 </body>
