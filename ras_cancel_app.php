@@ -45,6 +45,7 @@ $result = $conn->query($sql);
 <head>
     <meta charset="UTF-8">
     <title>Cancel Reservation</title>
+    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
 <style>
     
     body {

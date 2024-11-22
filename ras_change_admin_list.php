@@ -63,6 +63,7 @@ $conn->close();
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 
     <title>Admin Management</title>
+    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
     <style>
         body {
             font-family: Arial, sans-serif;

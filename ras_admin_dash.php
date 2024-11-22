@@ -15,6 +15,8 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 <head>
     <meta charset="UTF-8">
     <title>Admin Dashboard</title>
+    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
+
     <style>
         /* CSS for Admin Dashboard */
         body {

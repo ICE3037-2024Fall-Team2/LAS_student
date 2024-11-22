@@ -36,6 +36,7 @@ if (isset($_POST['password'])) {
 <head>
     <meta charset="UTF-8">
     <title>Confirm Password</title>
+    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
     <style>
       body {
     font-family: Arial, sans-serif;

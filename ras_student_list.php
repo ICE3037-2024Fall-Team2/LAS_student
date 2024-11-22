@@ -104,13 +104,14 @@ $conn->close();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
+    
     <!-- Toastr -->
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 
     <title>Student Management</title>
+    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
     <style>
         body {
             font-family: Arial, sans-serif;
