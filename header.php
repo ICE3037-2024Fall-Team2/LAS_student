@@ -9,7 +9,14 @@
         <i class="fa-solid fa-bars" onclick="toggleMenu()"></i>
         <div class="dropdown" id="userMenu">
             <i class="fa-solid fa-x close-dropdown" onclick="closeMenu()"></i>
-            <a href="profile.php#account-info">Account Info</a>
+            <!-- checks if the current page is profile.php -->
+            <?php
+            $currentPage = basename($_SERVER['PHP_SELF']); // gets the current file name
+            if ($currentPage === 'profile.php'): ?>
+                <a href="index.php">Home</a>
+            <?php else: ?>
+                <a href="profile.php">Account Info</a>
+            <?php endif; ?>
             <a href="profile.php#reservations-info">Reservations</a>
             <a href="profile.php#past-reservations">Past Reservations</a>
             <a href="profile.php#change-password">Change Password</a>
