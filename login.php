@@ -10,10 +10,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $id = $_POST['id'];
     $entered_password = $_POST['password'];
 
-    // Fetch user info based on the provided student ID
-    //$sql = "SELECT * FROM users WHERE id='$id'";
-    //$result = $conn->query($sql);
-    $sql = "SELECT * FROM users WHERE id = ?";
+    // Determine if the user is an admin or a student
+    if (str_starts_with($id, '1')) {
+        // Admin login
+        $sql = "SELECT * FROM admin WHERE admin_id = ?";
+    } elseif (str_starts_with($id, '2')) {
+        // Student login
+        $sql = "SELECT * FROM users WHERE id = ?";
+    } else {
+        // Invalid ID format
+        $_SESSION['toastr'] = array(
+            'type' => 'error',
+            'message' => 'Invalid ID format!'
+        );
+        header("Location: login.php");
+        exit();
+    }
+
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $id);
     $stmt->execute();
@@ -26,28 +39,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Verify the entered password with the stored hashed password
         if (password_verify($entered_password, $stored_password_hash)) {
             // Password is correct, set session variables
-            $_SESSION['id'] = $row['id'];
-            $_SESSION['username'] = $row['username'];
-
-            header("Location: index.php"); // redirect to welcome page
-            exit();
+            if (str_starts_with($id, '1')) {
+                // Admin login successful
+                $_SESSION['id'] = $row['admin_id'];
+                $_SESSION['username'] = $row['admin_name'];
+                $_SESSION['admin_logged_in'] = true;
+                header("Location: ras_admin_dash.php"); // Redirect to admin dashboard
+                exit();
+            } else {
+                // Student login successful
+                $_SESSION['id'] = $row['id'];
+                $_SESSION['username'] = $row['username'];
+                header("Location: index.php"); // Redirect to lab reservation page
+                exit();
+            }
         } else {
-            //echo "Invalid password!";
-            //echo "<script>alert('Invalid password!');</script>";
+            // Invalid password
             $_SESSION['toastr'] = array(
                 'type' => 'error',
                 'message' => 'Invalid password!'
             );
             header("Location: login.php");
+            exit();
         }
     } else {
-        //echo "User not found!";
-        //echo "<script>alert('User not found!');</script>";
+        // User not found
         $_SESSION['toastr'] = array(
             'type' => 'error',
             'message' => 'User not found!'
         );
         header("Location: login.php");
+        exit();
     }
 }
 
