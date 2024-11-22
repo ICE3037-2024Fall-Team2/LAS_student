@@ -71,15 +71,6 @@
 }
 
 /* Reservations tables */
-#reservations-info, #past-reservations {
-    font-size: 16px;
-}
-
-#reservations-info p, #past-reservations p {
-    margin: 10px 0;
-    color: #555;
-}
-
 #reservations-info table, #past-reservations table {
     width: 100%;
     border-collapse: collapse;
@@ -88,10 +79,54 @@
 
 #reservations-info th, #past-reservations th, 
 #reservations-info td, #past-reservations td {
-    padding: 10px;
-    text-align: left;
+    text-align: center; 
     border: 1px solid #ddd;
 }
+
+#past-reservations th, #past-reservations td {
+    padding: 10px 0;
+}
+
+/* Style for action buttons */
+.action-form {
+    margin: 5px 0;
+    display: flex;
+    flex-direction: column; /* Arrange buttons vertically */
+    align-items: center;
+}
+
+.qr-button,
+.cancel-button {
+    padding: 8px 15px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 14px;
+    width: 90%; 
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+/* Style for QR button */
+.qr-button {
+    background-color: #508e0d;
+    color: white;
+}
+
+.qr-button:hover {
+    background-color: #3d6b0b;
+}
+
+/* Style for Cancel button */
+.cancel-button {
+    background-color: #d9534f;
+    color: white;
+}
+
+.cancel-button:hover {
+    background-color: #c9302c;
+}
+
 
 /* Placeholder for no reservations */
 #reservations-info p, #past-reservations p {

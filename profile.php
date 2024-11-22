@@ -126,46 +126,40 @@ $past_result = $past_stmt->get_result();
         <div id="reservations-info">
             <h2>Upcoming Reservations</h2>
             <table border="1">
-        <thead>
-            <tr>
-                <th>Lab ID</th>
-                <th>Date</th>
-                <th>Time</th>
-                <th>generate QR Code</th>
-                <th>Cancel</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if ($future_result->num_rows > 0) { ?>
-                <?php while ($row = $future_result->fetch_assoc()) { ?>
+                <thead>
                     <tr>
-                        <td><?php echo htmlspecialchars($row['lab_id']); ?></td>
-                        <td><?php echo htmlspecialchars($row['date']); ?></td>
-                        <td><?php echo htmlspecialchars($row['time']); ?></td>
-                        <td>
-                            <form action="generate_qr.php" method="post">
-                                <!--<input type="hidden" name="lab_id" value="<?php echo $row['lab_id']; ?>">
-                                <input type="hidden" name="date" value="<?php echo $row['date']; ?>">
-                                <input type="hidden" name="time" value="<?php echo $row['time']; ?>">-->
-                                <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>" >
-                                <button type="submit" class="edit" id="qr-butt">View QR Code</button>
-                            </form>
-                        </td>
-                        <td>
-                            <form action="rsv_cancel.php" method="post">
-                                <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>" >
-                                <button type="submit" class="edit" id="cancel-butt">Cancel</button>
-                            </form>
-                        </td>
+                        <th>Lab</th>
+                        <th>Date</th>
+                        <th>Time</th>
+                        <th>Action</th>
                     </tr>
-                <?php } ?>
-            <?php } else { ?>
-                <tr>
-                    <td colspan="4">No upcoming reservations.</td>
-                </tr>
-            <?php } ?>
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                    <?php if ($future_result->num_rows > 0) { ?>
+                        <?php while ($row = $future_result->fetch_assoc()) { ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($row['lab_id']); ?></td>
+                                <td><?php echo htmlspecialchars($row['date']); ?></td>
+                                <td><?php echo htmlspecialchars($row['time']); ?></td>
+                                <td>
+                                    <form action="generate_qr.php" method="post" class="action-form">
+                                        <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
+                                        <button type="submit" class="qr-button">QR</button>
+                                    </form>
+                                    <form action="rsv_cancel.php" method="post" class="action-form">
+                                        <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
+                                        <button type="submit" class="cancel-button">Cancel</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <tr>
+                            <td colspan="4">No upcoming reservations.</td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
         </div>
 
         <!-- Past Reservations Section -->
@@ -174,7 +168,7 @@ $past_result = $past_stmt->get_result();
             <table border="1">
         <thead>
             <tr>
-                <th>Lab ID</th>
+                <th>Lab</th>
                 <th>Date</th>
                 <th>Time</th>
                 <th>Attended</th>
