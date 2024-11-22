@@ -60,7 +60,7 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SKKU LAS - Login</title>
+    <title>SKKU LRS - Login</title>
     <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css">
     <!-- Toastr -->
@@ -84,7 +84,7 @@ $conn->close();
 <body>
     <div id="header">
         <h1 id="logoKo" class="header_logo"><img src="img/logo.png?v=4"></h1>
-        <h2 id="logoTitle">Lab Appointment system</h2>
+        <h2 id="logoTitle">Lab Reservation system</h2>
         <!--h1 id="logoEn" style="display:none" class="header_logo"><img src="customs/resources/image/logo_en.png"></h1-->
     </div>
     <div id="login_wrapper">
