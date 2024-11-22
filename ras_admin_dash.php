@@ -86,9 +86,9 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         
         <ul>
             <li><a href="ras_cancel_app.php">Cancel Reservation</a></li>
-            <li><a href="ras_student_list.php">Student Management</a></li>
-            <li><a href="ras_lab_list.php">Lab Management</a></li>
-            <li><a href="ras_change_admin_list.php">Admin Management</a></li>
+            <li><a href="ras_student_list.php">Assign Lab</a></li>
+            <li><a href="ras_lab_list.php">Manage Labs</a></li>
+            <li><a href="ras_change_admin_list.php">Manage Admins</a></li>
             <li><a href="ras_admin_logout.php" class="logout">Logout</a></li>
         </ul>
     </div>

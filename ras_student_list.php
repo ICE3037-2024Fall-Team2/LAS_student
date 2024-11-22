@@ -269,25 +269,25 @@ $conn->close();
     </style>
 </head>
 <body>
-    <h2>Student Management</h2>
+    <h2>Lab Assignment</h2>
     <div><a href="ras_admin_dash.php">Go back to dashboad</a></div>
 
     <form method="POST" action="">
         <div class="fill">
-            <label for="add_id">Assign student:</label>
+            <label for="add_id">Student:</label>
             <select id="add_id" name="add_id" required>
                 <option value="" disabled selected>Select student</option>
                 <?php echo $studentOptions; ?>
             </select>
         </div>
         <div class="fill">
-            <label for="lab_id">To lab:</label>
+            <label for="lab_id">Lab:</label>
             <select id="lab_id" name="lab_id" required>
                 <option value="" disabled selected>Select lab</option>
                 <?php echo $labOptions; ?>
             </select>
         </div>
-        <button type="submit">Add Student</button>
+        <button type="submit">Assign</button>
     </form>
 
     <table>
