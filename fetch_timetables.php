@@ -1,16 +1,4 @@
 <?php
-/*
-$servername = "localhost";
-$username = "root";  
-$password = "wyq001102";     
-$dbname = "las_db";  
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-*/
 require 'db_connect.php';
 
 $lab_id = $_POST['lab_id'];
@@ -34,13 +22,20 @@ function getUnavailableTimetables($conn, $lab_id, $selected_date) {
 
 $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $selected_date);
 
+// Get the current time if the selected date is today
+date_default_timezone_set('Asia/Seoul'); // Set to your timezone
+$currentDate = date('Y-m-d');
+$currentTime = ($selected_date === $currentDate) ? date('H:i') : null;
+
 // Generate timetable block
 $times = ['10:00', '11:00', '12:00', '13:00', '14:00', '15:00', '16:00', '17:00', '18:00', '19:00', '20:00', '21:00'];
 for ($i = 0; $i < 4; $i++) {
     echo '<tr>';
     for ($j = 0; $j < 3; $j++) {
         $time = $times[$i * 3 + $j];
-        if (in_array($time, $unavailableTimetables)) {
+
+        // Check if the time is unavailable or in the past for today
+        if (in_array($time, $unavailableTimetables) || ($currentTime && $time <= $currentTime)) {
             echo '<td class="unavailable-time">' . $time . '</td>';
         } else {
             echo '<td class="available-time" data-time="' . $time . '">' . $time . '</td>';
@@ -50,3 +45,4 @@ for ($i = 0; $i < 4; $i++) {
 }
 
 $conn->close();
+?>
