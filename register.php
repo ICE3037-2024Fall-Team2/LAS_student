@@ -64,13 +64,17 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>SKKU LRS - Register</title>
     <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
     <link rel="stylesheet" href="css/style.css"> 
     <!-- Toastr -->
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <!-- importing styles for icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     
     <script>
@@ -102,18 +106,18 @@ $conn->close();
             <div class="loginForm">
                 <div class="loginBox">
                     <div class="inputText">
-                        <label for="id">Student ID</label>
+                        <label for="id"></label>
                         <input id="id" type="text" name="id" value="" 
                         pattern="[0-9]{10}"
                         title="Student ID must be exactly 10 digits." 
                         autocomplete="off" placeholder="Student ID" required>
                     </div>
                     <div class="inputText">
-                        <label for="username">Username</label>
+                        <label for="username"></label>
                         <input id="username" type="text" name="username" value="" autocomplete="off" placeholder="Username" required>
                     </div>
                     <div class="inputText">
-                        <label for="password">Password</label>
+                        <label for="password"></label>
                         <input id="password" type="password" name="password" autocomplete="new-password" placeholder="Password" required>
                     </div>
                 </div>

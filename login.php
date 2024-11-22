@@ -67,6 +67,10 @@ $conn->close();
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <!-- importing styles for icons-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
+        integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <script>
         function validateLoginForm() {
@@ -92,13 +96,13 @@ $conn->close();
             <div class="loginForm">
                 <div class="loginBox">
                     <div class="inputText">
-                        <label for="userid"> Student ID</label>
+                        <label for="userid"></label>
                         <input id="userid" type="text" name="id" value="" autocomplete="off"
                             placeholder="Student ID" required>
                             
                     </div>
                     <div class="inputText">
-                        <label for="password"> Password </label>
+                        <label for="password"></label>
                         <input id="password" type="password" name="password" autocomplete="new-password"
                             placeholder="Password" required>
                     </div>
