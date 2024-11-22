@@ -19,6 +19,32 @@ if (!isset($_SESSION['pw_verified']) || $_SESSION['pw_verified'] !== true) {
 // Database connection
 require 'db_connect.php'; 
 
+// Fetch lab IDs from DB
+$labOptions = '';
+$sql_lab = "SELECT lab_id FROM labs";
+$result = $conn->query($sql_lab);
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $labOptions .= '<option value="' . htmlspecialchars($row['lab_id']) . '">' . htmlspecialchars($row['lab_id']) . '</option>';
+    }
+} else {
+    $labOptions = '<option value="">No labs available</option>';
+}
+
+// Fetch student IDs from DB
+$studentOptions = '';
+$sql_students = "SELECT id FROM users"; 
+$result_students = $conn->query($sql_students);
+
+if ($result_students->num_rows > 0) {
+    while ($row = $result_students->fetch_assoc()) {
+        $studentOptions .= '<option value="' . htmlspecialchars($row['id']) . '">' . htmlspecialchars($row['id']) . '</option>';
+    }
+} else {
+    $studentOptions = '<option value="">No students available</option>';
+}
+
 // Handle delete request from lab_stu
 if (isset($_GET['delete_lab_id']) && isset($_GET['delete_user_id'])) {
     $delete_lab_id = $_GET['delete_lab_id'];
@@ -64,7 +90,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['add_id']) && isset($_P
         $add_query->close();
         $_SESSION['toastr'] = array(
             'type' => 'success',
-            'message' => 'Add Successful'
+            'message' => 'Successfully added!'
         );
         header("Location: ras_student_list.php"); // Redirect to refresh the page
         exit;
@@ -134,6 +160,7 @@ $conn->close();
         form {
             display: inline-block;
             text-align: center;
+            width: 30%;
         }
 
         .fill {
@@ -218,6 +245,27 @@ $conn->close();
             text-align: center;
             margin-bottom: 10px;
         }
+
+        /* Style for the select dropdown */
+        select {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+            background-color: white;
+            color: #333;
+            width: 50%; 
+        }
+
+        select:focus {
+            border-color: #008000; 
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
+        }
+
+        .fill label {
+            margin-right: 10px;
+        }
     </style>
 </head>
 <body>
@@ -226,16 +274,18 @@ $conn->close();
 
     <form method="POST" action="">
         <div class="fill">
-            <label for="add_id">Add student by id:</label>
-            <input type="text" id="add_id" name="add_id" value="" 
-                        pattern="[0-9]{10}"
-                        title="Student ID must be exactly 10 digits." required>
+            <label for="add_id">Assign student:</label>
+            <select id="add_id" name="add_id" required>
+                <option value="" disabled selected>Select student</option>
+                <?php echo $studentOptions; ?>
+            </select>
         </div>
         <div class="fill">
-            <label for="lab_id">To this lab:</label>
-            <input type="text" id="lab_id" name="lab_id" value="" 
-                        pattern="[0-9]{5}"
-                        title="Lab ID must be exactly 5 digits." required>
+            <label for="lab_id">To lab:</label>
+            <select id="lab_id" name="lab_id" required>
+                <option value="" disabled selected>Select lab</option>
+                <?php echo $labOptions; ?>
+            </select>
         </div>
         <button type="submit">Add Student</button>
     </form>
