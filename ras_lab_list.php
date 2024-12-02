@@ -133,6 +133,7 @@ $conn->close();
             display: block;
             font-size: 18px;
             margin-bottom: 10px;
+            font-weight: bold;
         }
 
         p{

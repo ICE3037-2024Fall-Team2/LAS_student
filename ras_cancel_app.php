@@ -188,7 +188,16 @@ $result = $conn->query($sql);
                     echo "<td>" . htmlspecialchars($row['user_id']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['date']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['time']) . "</td>";
-                    echo "<td>" . ($row['verified'] ? 'Yes' : 'No') . "</td>";
+                    if ($row['verified']) {
+            echo "<td>Yes</td>";
+        } else {
+            echo "<td>
+                <form action='ras_verify_app.php' method='post' style='display:inline;'>
+                    <input type='hidden' name='reservation_id' value='" . htmlspecialchars($row['reservation_id']) . "'>
+                    <button type='submit' class='no-btn'>No</button>
+                </form>
+            </td>";
+        }
                     echo "</tr>";
                 }
             } else {
