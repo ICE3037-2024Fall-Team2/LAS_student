@@ -49,15 +49,6 @@ if ($result->num_rows > 0) {
 // Selects unavailable timetables from DB (for the chosen date)
 function getUnavailableTimetables($conn, $lab_id, $date, $lab_capacity)
 {
-    /*$sql = "SELECT time FROM reservations WHERE lab_id='$lab_id' AND date='$date'";
-    $result = $conn->query($sql);
-
-    $unavailable = [];
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $unavailable[] = $row['time'];
-        }
-    }*/
     //$sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
     /*$sql = "SELECT time, COUNT(*) as reservation_count 
             FROM reservations 
@@ -81,9 +72,9 @@ function getUnavailableTimetables($conn, $lab_id, $date, $lab_capacity)
     
     // Fetch all the unavailable times
     while ($stmt->fetch()) {
-        // 如果预约人数已经达到实验室容量，或者当前用户已经预约了这个时间段
+        // If the number of reservations has reached the lab's capacity, or the current user has already reserved this time slot
         if ($user_reserved != 0 || $reservation_count >= $lab_capacity) {
-            $unavailable[] = $time;  // 标记时间为不可用
+            $unavailable[] = $time;  // Mark the time as unavailable
         }
     }
     
@@ -208,27 +199,6 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
     </div>
 
     <script>
-        /*function toggleMenu() {
-            var menu = document.getElementById('userMenu');
-            menu.classList.toggle('active');
-        }
-
-        function closeMenu() {
-            var menu = document.getElementById('userMenu');
-            menu.classList.remove('active');
-        }
-
-        // Close the menu if the user clicks outside of it
-        document.addEventListener('click', function(event) {
-            var menu = document.getElementById('userMenu');
-            var icon = document.querySelector('.fa-user');
-        
-            // If outside, close the menu
-            if (!menu.contains(event.target) && !icon.contains(event.target)) {
-                menu.classList.remove('active');
-            }
-        });*/
-        
         $(document).ready(function () {
             // Handling date click
             $('.available-date').on('click', function () {
