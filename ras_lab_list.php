@@ -196,7 +196,7 @@ $conn->close();
             text-align: center;
             justify-content: flex-start; 
             gap: 5px;
-            margin: 5px 0px;
+            margin-bottom: 5px;
             }
 
             button[type="submit"] {
