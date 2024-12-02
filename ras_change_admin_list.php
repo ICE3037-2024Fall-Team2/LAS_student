@@ -155,6 +155,13 @@ $conn->close();
             margin: 5px 10px;
         }
 
+        .disabled {
+            background-color: gray;
+            cursor: not-allowed;
+            text-decoration: none;
+            pointer-events: none;
+        }
+
         .delete-btn:hover {
             background-color: #cc0000;
         }
@@ -166,6 +173,21 @@ $conn->close();
             display: block;
             text-align: center;
             margin-bottom: 10px;
+        }
+
+        @media (max-width: 768px) {
+            form {
+            display: inline-block;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: flex-end; 
+            gap: 2px;
+            margin: 2px 0px;
+            }
+
         }
 
     </style>
@@ -200,9 +222,15 @@ $conn->close();
                 <td><?php echo htmlspecialchars($admin['admin_id']); ?></td>
                 <td><?php echo htmlspecialchars($admin['admin_name']); ?></td>
                 <td>
+                    <?php if ($admin['admin_id'] === $_SESSION['id']): ?>
+                    <a href="#" 
+                    class="delete-btn disabled" 
+                    onclick="return false;" >Delete</a>
+                <?php else: ?>
                     <a href="ras_change_admin_list.php?delete_admin_id=<?php echo urlencode($admin['admin_id']); ?>" 
-                       onclick="return confirm('Are you sure you want to remove this admin?');" 
-                       class="delete-btn">Delete</a>
+                    onclick="return confirm('Are you sure you want to remove this admin?');" 
+                    class="delete-btn">Delete</a>
+                <?php endif; ?>
                 </td>
             </tr>
         <?php endforeach; ?>
