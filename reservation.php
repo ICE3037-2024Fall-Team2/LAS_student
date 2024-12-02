@@ -200,6 +200,24 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
 
     <script>
         $(document).ready(function () {
+            // Fetch timetables when the page loads
+            var defaultDate = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+            $('#selected_date').val(defaultDate); // Set the default selected date
+
+            // Fetch timetables for the default date
+            $.ajax({
+                url: 'fetch_timetables.php',
+                method: 'POST',
+                data: {
+                    lab_id: '<?php echo $lab_id; ?>',
+                    selected_date: defaultDate
+                },
+                success: function (response) {
+                    $('#timetable').html(response);
+                    $('#reserve-button').prop('disabled', true).removeClass('enabled');
+                }
+            });
+            
             // Handling date click
             $('.available-date').on('click', function () {
                 // Deselect all dates
