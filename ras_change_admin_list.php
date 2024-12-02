@@ -175,7 +175,7 @@ $conn->close();
             margin-bottom: 10px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 800px) {
             form {
             display: inline-block;
             text-align: center;

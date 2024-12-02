@@ -138,7 +138,7 @@ $result = $conn->query($sql);
         text-align: center;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 800px) {
             form {
             display: inline-block;
             text-align: center;

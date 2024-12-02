@@ -188,7 +188,7 @@ $conn->close();
             margin-bottom: 10px;
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 800px) {
             .fill {
             display: flex;
             flex-direction: column;
