@@ -137,6 +137,21 @@ $result = $conn->query($sql);
         margin-bottom: 10px;
         text-align: center;
     }
+
+    @media (max-width: 768px) {
+            form {
+            display: inline-block;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            justify-content: flex-end; 
+            gap: 2px;
+            margin: 2px 0px;
+            }
+
+        }
     </style>
 </head>
 <body>

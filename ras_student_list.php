@@ -266,6 +266,10 @@ $conn->close();
         .fill label {
             margin-right: 10px;
         }
+
+        select {
+            width: auto; 
+        }
     </style>
 </head>
 <body>
