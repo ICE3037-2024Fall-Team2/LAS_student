@@ -197,7 +197,11 @@ $conn->close();
             justify-content: flex-start; 
             gap: 5px;
             margin: 5px 0px;
-        }
+            }
+
+            button[type="submit"] {
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
