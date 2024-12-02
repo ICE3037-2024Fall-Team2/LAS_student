@@ -267,9 +267,12 @@ $conn->close();
             margin-right: 10px;
         }
 
-        select {
-            width: auto; 
+        @media (max-width: 800px) {
+            select {
+                width: auto; 
+            }
         }
+
     </style>
 </head>
 <body>

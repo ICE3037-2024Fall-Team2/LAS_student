@@ -190,14 +190,18 @@ $conn->close();
 
         @media (max-width: 800px) {
             .fill {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            justify-content: flex-start; 
-            gap: 5px;
-            margin-bottom: 5px;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                justify-content: flex-start; 
+                gap: 2px;
             }
+
+            .fill input{
+                margin-bottom: 5px;
+            }
+
 
             button[type="submit"] {
                 margin-top: 5px;
