@@ -13,7 +13,7 @@
 /* Section styling */
 #profile-content > div {
     background-color: #fff;
-    padding: 20px;
+    padding: 0 20px 20px 20px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
@@ -84,6 +84,10 @@
     border: 1px solid #ddd;
 }
 
+#reservations-info th, #reservations-info td {
+    padding: 10px 0;
+}
+
 #past-reservations th, #past-reservations td {
     padding: 10px 0;
 }
@@ -96,16 +100,15 @@
     align-items: center;
 }
 
-.qr-button,
-.cancel-button {
-    padding: 8px 15px;
+.qr-button, .cancel-button {
+    padding: 8px 5px;
     border: none;
     cursor: pointer;
     border-radius: 5px;
     font-size: 14px;
-    width: 90%; 
+    width: 90%;
     text-align: center;
-    margin-bottom: 5px;
+    margin: 0 5px 0 5px;
 }
 
 /* Style for QR button */
@@ -210,6 +213,20 @@
 .close-btn:focus {
     color: black;
     text-decoration: none;
+}
+
+.qr-cancel-button {
+    margin-top: 20px;
+    background-color: #e2e2e2;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.qr-cancel-button:hover {
+    background-color: #a7a7a7;
 }
 
 /* Style for the Rejected link */

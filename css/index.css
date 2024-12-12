@@ -159,6 +159,7 @@
 
     #header {
         padding: 10px 20px;
+        margin-bottom: 0;
     }
 
     #book-lab-block {
