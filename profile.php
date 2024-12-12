@@ -129,26 +129,32 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
         <div id="account-info">
             <h2>Account Info</h2>
             <!-- Photo Upload / Display -->
-            <?php if ($presignedUrl == null) { ?>
-                <p><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
-                <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
-                    <label for="photo">Upload your photo:</label>
-                    <input type="file" name="photo" id="photo"> 
-                    <input type="file" name="photo" id="photo" accept="image/*" (change)="getFile($event)" />
+             <div class="personal-info">
+                <?php if ($presignedUrl == null) { ?>
+                    <p><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
+                    <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
+                        <label for="photo">Upload your photo:</label>
+                        <input type="file" name="photo" id="photo"> 
+                        <input type="file" name="photo" id="photo" accept="image/*" (change)="getFile($event)" />
 
-                    <button type="submit">Upload</button>
-                </form>-->
-            <?php } else { ?>
-                <p><img src="<?php echo htmlspecialchars($presignedUrl); ?>" alt="Profile Photo" class="profile-photo">
-            <?php } ?>
-            <p><strong>Student ID:</strong> <?php echo $_SESSION['id']; ?></p>
-            <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
-            <p><strong>Phone:</strong> 
-                <?php echo !empty($phonenumber) ? htmlspecialchars($phonenumber) : 'Please complete your information'; ?>
-            </p>
-            <p><strong>Email:</strong> 
-                <?php echo !empty($email) ? htmlspecialchars($email) : 'Please complete your information'; ?>
-            </p>
+                        <button type="submit">Upload</button>
+                    </form>-->
+                <?php } else { ?>
+                    <p><img src="<?php echo htmlspecialchars($presignedUrl); ?>" alt="Profile Photo" class="profile-photo">
+                <?php } ?>
+                <div class="unchanged-info">
+                    <p><strong>ID:</strong> <?php echo $_SESSION['id']; ?></p>
+                    <p><strong>Name:</strong> <?php echo $_SESSION['username']; ?></p>
+                    <p style="margin-top: 25px"> <strong>Contact info: </strong>
+                          </p>
+                    <p> 
+                    <?php echo !empty($phonenumber) ? htmlspecialchars($phonenumber) : 'Please complete'; ?>
+                    </p>
+                    <p>
+                        <?php echo !empty($email) ? htmlspecialchars($email) : 'Please complete'; ?>
+                    </p>
+                </div>
+             </div>
             
             <button id="edit-inf-butt" class="edit">Edit</button>
         </div>
@@ -312,7 +318,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                 <input type="file" name="photo" id="photo" accept="image/*"><br>
                 <img id="img-preview" alt="Image Preview">
                 </p>
-                <button type="submit" class="edit">Save Changes</button>
+                <button type="submit" class="edit">Save</button>
             </form>
             <button id="cancel-edit" class="edit">Cancel</button>
 
