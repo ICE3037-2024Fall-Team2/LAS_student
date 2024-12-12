@@ -16,35 +16,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $verified = 0;
 
 
-    $check_sql = "SELECT * FROM reservations WHERE user_id = ? AND date = ? AND time = ?";
+    $check_sql = "SELECT * FROM reservations WHERE user_id = ? AND date = ? AND time = ? AND verified != 3 ";
     $check_stmt = $conn->prepare($check_sql);
     $check_stmt->bind_param("sss", $user_id, $selected_date, $selected_time);
     $check_stmt->execute();
-    $check_stmt->bind_result($reservation_id, $verified);
     $check_stmt->store_result();
 
     if ($check_stmt->num_rows > 0) {
-        $check_stmt->fetch();
-        if ((int)$verified === 3) {
-        $update_sql = "UPDATE reservations SET lab_id = ?, verified = 0 WHERE reservation_id = ?";
-        $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("si", $lab_id, $reservation_id);
-
-        if ($update_stmt->execute()) {
-            $_SESSION['toastr'] = array(
-                'type' => 'success',
-                'message' => 'Reservation successfully created.'
-            );
-        } else {
-            $_SESSION['toastr'] = array(
-                'type' => 'error',
-                'message' => 'Failed to update your reservation.'
-            );
-        }
-     }
+        $_SESSION['toastr'] = array(
+            'type' => 'warning',
+            'message' => 'You have already reserved for this time.'
+        );
         //header("Location: profile.php");
         //exit;
     } else {
+        $check_cancel = $sql = "DELETE FROM reservations 
+        WHERE user_id = ? 
+          AND lab_id = ? 
+          AND date = ? 
+          AND time = ? 
+          AND verified = 3";
+
+        $delete_stmt = $conn->prepare($sql);
+        $delete_stmt->bind_param("ssss", $user_id, $lab_id, $selected_date, $selected_time);
+
+        $delete_stmt->execute();
+
+        $delete_stmt->close();
+
         $reservation_id = date('YmdHi') . rand(100, 999); 
 
         $sql = "INSERT INTO reservations (reservation_id, lab_id, user_id, date, time, verified) VALUES (?, ?, ?, ?, ?, ?)";
