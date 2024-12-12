@@ -13,11 +13,11 @@
             <?php
             $currentPage = basename($_SERVER['PHP_SELF']); // gets the current file name
             if ($currentPage === 'profile.php'): ?>
-                <a href="index.php">Home</a>
+                <a href="index.php">Reserve</a>
             <?php else: ?>
                 <a href="profile.php">Account Info</a>
             <?php endif; ?>
-            <a href="profile.php#reservations-info">Reservations</a>
+            <a href="profile.php#reservations-info">Upcoming Reservations</a>
             <a href="profile.php#past-reservations">Past Reservations</a>
             <a href="profile.php#change-password">Change Password</a>
             <a href="logout.php" class="logout">Logout</a>
