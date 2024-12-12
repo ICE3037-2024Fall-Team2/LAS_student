@@ -1,19 +1,12 @@
 <?php
 session_start();
 
-
 if (!isset($_SESSION['username'])) {
     header("Location: login.php");
     exit();
 }
 $toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
 unset($_SESSION['toastr']);
-// Placeholder values for demonstration purposes
-//$student_id = "2022123456";
-//$username = "john_doe";
-//$phone_number = "010-1234-5678";
-//$email = "john_doe@domain.com";
-//$photo_path = null; // Assume photo is null for now, which means no photo is uploaded
 
 require 'db_connect.php';
 require 's3_connect.php';
@@ -30,10 +23,7 @@ $stmt->execute();
 $stmt->bind_result($phonenumber, $email, $photo_path);
 
 
-if ($stmt->fetch()) {
-} 
-
-
+$stmt->fetch();
 $stmt->close();
 
 $presignedUrl = '';
@@ -49,7 +39,7 @@ if ($photo_path){
 }
 
 
-//upcoming reservation
+//upcoming reservations
 date_default_timezone_set('Asia/Seoul');
 
 $now = new DateTime();
@@ -115,6 +105,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 
     <link rel="stylesheet" href="css/style.css"> 
     <link rel="stylesheet" href="css/index.css"> 
@@ -151,7 +143,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
             <?php } ?>
             <p><strong>Student ID:</strong> <?php echo $_SESSION['id']; ?></p>
             <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
-            <p><strong>Phone Number:</strong> 
+            <p><strong>Phone:</strong> 
                 <?php echo !empty($phonenumber) ? htmlspecialchars($phonenumber) : 'Please complete your information'; ?>
             </p>
             <p><strong>Email:</strong> 
@@ -183,13 +175,11 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                                 <td>
                                     <?php 
                                     if ($row['verified'] == 0) {
-                                        echo 'Processing';
+                                        echo 'Pending';
                                     } elseif ($row['verified'] == 1) {
                                         ?>
-                                        <form action="generate_qr.php" method="post" class="action-form">
-                                            <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
-                                            <button type="submit" class="qr-button">QR</button>
-                                        </form>
+                                        <button class="qr-button" onclick="openQrModal('<?php echo $row['reservation_id']; ?>')">QR</button>
+
                                         <form action="rsv_cancel.php" method="post" class="action-form">
                                             <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
                                             <button type="submit" class="cancel-button">Cancel</button>
@@ -277,6 +267,26 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
         </div>
 
     </div>
+
+    <!-- Modal window-->
+    <div id="rejectedMessageModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeModal()">&times;</span>
+            <p id="rejectedMessageText"></p>
+        </div>
+    </div>
+
+    <!-- QR Code Modal window -->
+    <div id="qrCodeModal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeQrModal()">&times;</span>
+            <h3>Your QR Code</h3>
+            <div id="qr-code-container" style="display: flex; justify-content: center; margin-top: 20px;"></div>
+            <button class="qr-cancel-button" onclick="closeQrModal()">Close</button>
+        </div>
+    </div>
+
+
     <!-- JavaScript for handling Edit and Save -->
     <script>
     document.getElementById('edit-inf-butt').addEventListener('click', function() {
@@ -368,6 +378,27 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
     function closeModal() {
         document.getElementById('rejectedMessageModal').style.display = 'none';
     }
+
+    // Open QR Modal
+    function openQrModal(reservationId) {
+        const qrCodeContainer = document.getElementById("qr-code-container");
+        qrCodeContainer.innerHTML = ""; // Clear previous QR code
+
+        const qrCode = new QRCode(qrCodeContainer, {
+            text: reservationId,
+            width: 200,
+            height: 200,
+        });
+
+        document.getElementById("qrCodeModal").style.display = "block";
+    }
+
+    // Close QR Modal
+    function closeQrModal() {
+        document.getElementById("qrCodeModal").style.display = "none";
+        const qrCodeContainer = document.getElementById("qr-code-container");
+        qrCodeContainer.innerHTML = ""; // Clear QR code for safety
+    }
 </script>
 
 <?php if ($toastr): ?>
@@ -377,13 +408,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
         });
     </script>
     <?php endif; ?>
-
-    <div id="rejectedMessageModal" class="modal" style="display:none;">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeModal()">&times;</span>
-            <p id="rejectedMessageText"></p>
-        </div>
-    </div>
 </body>
 
 </html>
