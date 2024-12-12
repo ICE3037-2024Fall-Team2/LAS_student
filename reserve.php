@@ -67,14 +67,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
             }
 
-            $subject = "{$lab_id} New Reservation";
+            $subject = "[{$reservation_id}] There Is A New Reservation";
             $body = "
-                <h1>New Reservation Created</h1>
+                <p>Dear Admin,</p><br>
+                <p>There is a new reservation from our system, here are the details:</p>
+                <hr>
                 <p><strong>Reservation ID:</strong> {$reservation_id}</p>
                 <p><strong>Student ID:</strong> {$user_id}</p>
                 <p><strong>Lab ID:</strong> {$lab_id}</p>
                 <p><strong>Time:</strong> {$selected_date} {$selected_time}</p>
-                <p>Please check the reservation at your most available time.</p>
+                <hr><br>
+                <p>Please go to our website and check the reservation at your most available time.</p><br>
+                <p>Sincerely,</p>
+                <br>
+                <p>Sungkyunkwan University</p>
+                <p>Lab Reservation System</p>
             ";
 
             if (!empty($admin_emails)) {

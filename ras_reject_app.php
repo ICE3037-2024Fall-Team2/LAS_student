@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 require 'db_connect.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -38,6 +40,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Commit transaction
             $conn->commit();
+            
+            $info_sql = "SELECT r.user_id, r.lab_id, r.date, r.time, u.email 
+             FROM reservations r 
+             JOIN user_info u ON r.user_id = u.id 
+             WHERE r.reservation_id = ?";
+
+            $info_stmt = $conn->prepare($info_sql);
+            $info_stmt->bind_param("i", $reservation_id);
+            $info_stmt->execute();
+            $result = $info_stmt->get_result();
+
+            if ($result->num_rows === 0) {
+                throw new Exception("Reservation ID not found.");
+            }
+
+ 
+            $row = $result->fetch_assoc();
+            $user_email = $row['email'];
+            $lab_id = $row['lab_id'];
+            $reservation_time = $row['date'] . ' ' . $row['time'];
+
+  
+            $title = "[{$reservation_id}] Your Reservation For {$lab_id} Has Been Rejected";
+            $body = "<p>Dear Student,</p><br>
+                    <p>We are sorry to inform you, your reservation has been rejected.</p>
+                    <hr>
+                    <p><strong>Reservation ID:</strong> {$reservation_id}</p>
+                    <p><strong>Lab ID:</strong> {$lab_id}</p>
+                    <p><strong>Time:</strong> {$reservation_time}</p><br>
+                    <p><strong>Reason for rejection:</strong></p>
+                    <blockquote>{$rejected_message}</blockquote>
+                    <br>
+                    <p>This email message was auto-generated. Please do not respond.</p><p>If you need additional information, please visit our website.</p>
+                    <hr><br>
+                    <p>Sincerely,</p><br>
+                    <p>Sungkyunkwan University</p>
+                    <p>Lab Reservation System</p>
+                    <p>Admin In Charge: {$_SESSION['id']}</p>
+                    ";
+
+
+            require_once 'mailer.php';
+            try {
+                sendEmail($user_email, $title, $body);
+                error_log("Rejection email sent successfully to {$user_email}");
+            } catch (Exception $e) {
+                error_log("Failed to send rejection email: " . $e->getMessage());
+            }
+
+            $info_stmt->close();
+            $stmt->close();
+            $conn->close();
             
             // Redirect back with success
             header("Location: " . $_SERVER['HTTP_REFERER']);
