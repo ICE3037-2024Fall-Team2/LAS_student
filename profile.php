@@ -53,6 +53,7 @@ if ($photo_path){
 date_default_timezone_set('Asia/Seoul');
 
 $now = new DateTime();
+$now->sub(new DateInterval('PT5M'));
 $now_str = $now->format('Y-m-d H:i:s');
 
 $past_date = $now->modify('-30 days')->format('Y-m-d H:i:s');
@@ -60,8 +61,8 @@ $past_date = $now->modify('-30 days')->format('Y-m-d H:i:s');
 $future_sql = "SELECT reservation_id, lab_id, date, time, verified, checked
                FROM reservations 
                WHERE user_id = ? 
-               AND CONCAT(date, ' ', time) >= ? 
-               ORDER BY date, time";
+               AND CONCAT(date, ' ', time) >= ?  AND verified != 3
+               ORDER BY date ASC, time ASC";
 $future_stmt = $conn->prepare($future_sql);
 $future_stmt->bind_param("ss", $_SESSION['id'], $now_str);
 $future_stmt->execute();
@@ -71,9 +72,9 @@ $future_result = $future_stmt->get_result();
 $past_sql = "SELECT reservation_id, lab_id, date, time, verified, checked 
              FROM reservations 
              WHERE user_id = ? 
-             AND CONCAT(date, ' ', time) >= ? 
-             AND CONCAT(date, ' ', time) < ? 
-             ORDER BY date DESC, time";
+             AND ( verified = 3 OR(CONCAT(date, ' ', time) >= ? 
+             AND CONCAT(date, ' ', time) < ? ))
+             ORDER BY date DESC, time DESC";
 $past_stmt = $conn->prepare($past_sql);
 $past_stmt->bind_param("sss", $_SESSION['id'], $past_date, $now_str);
 $past_stmt->execute();
@@ -176,7 +177,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                         <?php while ($row = $future_result->fetch_assoc()) { ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($row['lab_id']); ?></td>
-                                <td><?php echo htmlspecialchars($row['date']); ?></td>
+                                <td><?php $date = new DateTime($row['date']);
+                                            echo htmlspecialchars($date->format('M d')); ?></td>
                                 <td><?php echo htmlspecialchars($row['time']); ?></td>
                                 <td>
                                     <?php 
@@ -228,18 +230,23 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                         <?php while ($row = $past_result->fetch_assoc()) { ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($row['lab_id']); ?></td>
-                                <td><?php echo htmlspecialchars($row['date']); ?></td>
+                                <td><?php $date = new DateTime($row['date']);
+                                            echo htmlspecialchars($date->format('M d')); ?></td>
+                               </td>
                                 <td><?php echo htmlspecialchars($row['time']); ?></td>
                                 <td>
                                     <?php 
                                         if ($row['verified'] == 2) {
                                             $reservation_id = htmlspecialchars($row['reservation_id']);
                                             echo "<a href='#' class='rejected-link' onclick=\"showRejectedMessage('$reservation_id', event)\">Rejected</a>";
-                                        } elseif ($row['checked'] == 0) {
+                                        } elseif ($row['verified'] == 3) {
+                                            echo 'Cancelled';
+                                        }elseif ($row['checked'] == 0) {
                                             echo 'Absent';
                                         } elseif ($row['checked'] == 1) {
                                             echo 'Attended';
                                         }
+                                   
                                     ?>
                                 </td>
                             </tr>

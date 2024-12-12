@@ -17,7 +17,7 @@ if (!isset($_SESSION['pw_verified']) || $_SESSION['pw_verified'] !== true) {
 // Database connection
 require 'db_connect.php';
 
-if (isset($_POST['reservation_id'])) {
+/*if (isset($_POST['reservation_id'])) {
     $reservation_id = $_POST['reservation_id'];
 
     // Delete the reservation
@@ -30,15 +30,24 @@ if (isset($_POST['reservation_id'])) {
         echo "Failed to cancel the reservation.";
     }
     $stmt->close();
-}
+}*/
+
+date_default_timezone_set('Asia/Seoul');
+
+$now = new DateTime();
+$now_str = $now->format('Y-m-d H:i:s');
 
 // Fetch all reservations
 $sql = "SELECT r.reservation_id, r.lab_id, r.user_id, r.date, r.time, r.verified, rm.rejected_message 
         FROM reservations r
         LEFT JOIN rejected_messages rm ON r.reservation_id = rm.reservation_id
-        WHERE r.date >= CURDATE()
-        ORDER BY r.date ASC, r.time ASC";
-$result = $conn->query($sql);
+        WHERE CONCAT(r.date, ' ', r.time) >= ?
+        ORDER BY r.date DESC, r.time DESC";
+
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("s", $now_str);
+$stmt->execute();
+$result = $stmt->get_result();
 ?>
 
 <!DOCTYPE html>

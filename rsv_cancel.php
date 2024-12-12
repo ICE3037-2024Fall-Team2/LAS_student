@@ -7,7 +7,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $reservation_id = $_POST['reservation_id'];
 
     // Prepare the SQL DELETE statement to delete the reservation by the primary key (reservation_id)
-    $sql = "DELETE FROM reservations WHERE reservation_id = ?";
+    //$sql = "DELETE FROM reservations WHERE reservation_id = ?";
+    $sql = "UPDATE reservations SET verified = 3 WHERE reservation_id = ?";
 
     if ($stmt = $conn->prepare($sql)) {
         $stmt->bind_param("s", $reservation_id);

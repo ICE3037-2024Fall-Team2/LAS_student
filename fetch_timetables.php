@@ -6,7 +6,7 @@ $selected_date = $_POST['selected_date'];
 
 // Function to get unavailable timetables for the selected date
 function getUnavailableTimetables($conn, $lab_id, $selected_date) {
-    $sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ?";
+    $sql = "SELECT time FROM reservations WHERE lab_id = ? AND date = ? AND verified != 3";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $lab_id, $selected_date);
     $stmt->execute();

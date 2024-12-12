@@ -59,7 +59,7 @@ function getUnavailableTimetables($conn, $lab_id, $date, $lab_capacity)
     $sql = "SELECT time, COUNT(*) as reservation_count, 
                    SUM(CASE WHEN user_id = ? THEN 1 ELSE 0 END) as user_reserved
             FROM reservations 
-            WHERE lab_id = ? AND date = ?
+            WHERE lab_id = ? AND date = ? AND verified != 3
             GROUP BY time";
 
     $stmt = $conn->prepare($sql);
