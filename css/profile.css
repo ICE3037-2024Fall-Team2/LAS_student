@@ -1,7 +1,7 @@
 /* General layout for profile page */
 #profile-content {
-    width: 90%;
-    margin: 20px auto;
+    width: 95%;
+    margin: 10px auto;
     display: flex;
     flex-direction: column;
     gap: 30px;
@@ -13,7 +13,7 @@
 /* Section styling */
 #profile-content > div {
     background-color: #fff;
-    padding: 0 20px 20px 20px;
+    padding: 0 15px 20px 15px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #e0e0e0;
@@ -40,6 +40,10 @@
     margin: 10px 0;
 }
 
+#photo-upload{
+    max-width: 280px;
+}
+
 
 #account-info img.profile-photo {
     display: block;
@@ -55,7 +59,6 @@
 .personal-info{
     display: flex;
     flex-direction: row;
-    gap: 20px;
     margin-bottom: 20px;
     align-items: center;
 }
@@ -63,12 +66,13 @@
 .unchanged-info{
     display: flex;
     flex-direction: column;
+    margin-left: 10px;
 }
 
 
 .edit {
     padding: 5px 15px; 
-    margin-right: 15px;
+    margin: 15px 15px 15px auto;
     cursor: pointer; 
     background-color: #508e0d;
     color: white;
@@ -77,6 +81,14 @@
     cursor: pointer;
     float: right;
     width: 40%;
+}
+
+#cancel-edit {
+    background-color: #d9534f;
+}
+
+#cancel-edit:hover {
+    background-color: #c9302c;
 }
 
 #qr-butt, #cancel-butt{

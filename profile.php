@@ -305,17 +305,17 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                 <p><strong>Student ID:</strong> <?php echo $_SESSION['id']; ?></p>
                 <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
 
-                <p><strong><label for="phone">Phone Number:</label></strong>
+                <p style="margin-top: 25px"><strong><label for="phone">Phone Number:</label></strong>
                     <input type="text" id="phone" name="phone" 
                     pattern="010-[0-9]{4}-[0-9]{4}"
                     title="Phone number must be in the format 010-xxxx-xxxx" 
                     value="<?php echo htmlspecialchars($phonenumber); ?>" required><br>
                 </p>
-                <p><strong><label for="email">Email:</label></strong>
+                <p><strong><label for="email">Email Address:</label></strong>
                     <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($email); ?>" required><br>
                 </p>
-                <p><strong><label for="photo">Upload your photo:</label></strong>
-                <input type="file" name="photo" id="photo" accept="image/*"><br>
+                <p><strong><label for="photo-upload">Upload your photo:</label></strong>
+                <input type="file" name="photo-upload" id="photo-upload" accept="image/*"><br>
                 <img id="img-preview" alt="Image Preview">
                 </p>
                 <button type="submit" class="edit">Save</button>
@@ -334,7 +334,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
             this.value = this.value.trim(); 
         });
 
-        document.getElementById('photo').addEventListener('change', function(event) {
+        document.getElementById('photo-upload').addEventListener('change', function(event) {
             var file = event.target.files[0];
             if (file) {
                 var reader = new FileReader();
