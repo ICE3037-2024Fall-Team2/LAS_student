@@ -279,6 +279,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
         <div class="modal-content">
             <span class="close-btn" onclick="closeModal()">&times;</span>
             <p id="rejectedMessageText"></p>
+            <button class="qr-cancel-button" onclick="closeModal()">Close</button>
         </div>
     </div>
 
@@ -392,8 +393,8 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
 
         const qrCode = new QRCode(qrCodeContainer, {
             text: reservationId,
-            width: 200,
-            height: 200,
+            width: 150,
+            height: 150,
         });
 
         document.getElementById("qrCodeModal").style.display = "block";
