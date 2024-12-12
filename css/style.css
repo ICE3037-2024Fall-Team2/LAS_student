@@ -287,3 +287,9 @@ body, ul, li, a, div, nav, h1, h2, h3, h4, span, p, address, footer, button {   
 #toast-container {
   margin-top: 5% !important;
 }
+
+@media (max-width: 767px) {
+  #toast-container {
+    margin-top: 15% !important;
+  }
+}
