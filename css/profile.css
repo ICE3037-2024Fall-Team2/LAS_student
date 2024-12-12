@@ -42,7 +42,8 @@
 
 #account-info img.profile-photo {
     display: block;
-    margin-top: 15px;
+    margin: 0 auto;
+    margin-bottom: 15px;
     max-width: 150px;
     border-radius: 50%;
     border: 2px solid #69ca00;

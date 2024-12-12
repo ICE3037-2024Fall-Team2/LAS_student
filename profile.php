@@ -54,10 +54,10 @@ $future_stmt->bind_param("ss", $_SESSION['id'], $today_str);
 $future_stmt->execute();
 $future_result = $future_stmt->get_result();
 
-$past_date = $today->modify('-30 days')->format('Y-m-d');
-$past_sql = "SELECT lab_id, date, time, verified FROM reservations WHERE user_id = ? AND date < ? ORDER BY date DESC, time";
+$past_date = $today->modify('-30 days')->format('Y-m-d'); // Correctly calculate the date 30 days ago
+$past_sql = "SELECT lab_id, date, time, verified FROM reservations WHERE user_id = ? AND date >= ? AND date < ? ORDER BY date DESC, time";
 $past_stmt = $conn->prepare($past_sql);
-$past_stmt->bind_param("ss", $_SESSION['id'], $today_str);
+$past_stmt->bind_param("sss", $_SESSION['id'], $past_date, $today_str); // Use $past_date and $today_str
 $past_stmt->execute();
 $past_result = $past_stmt->get_result();
 
@@ -98,17 +98,9 @@ $past_result = $past_stmt->get_result();
         <!-- Account Info Section -->
         <div id="account-info">
             <h2>Account Info</h2>
-            <p><strong>Student ID:</strong> <?php echo $_SESSION['id']; ?></p>
-            <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
-            <p><strong>Phone Number:</strong> 
-                <?php echo !empty($phonenumber) ? htmlspecialchars($phonenumber) : 'Please complete your information'; ?>
-            </p>
-            <p><strong>Email:</strong> 
-                <?php echo !empty($email) ? htmlspecialchars($email) : 'Please complete your information'; ?>
-            </p>
             <!-- Photo Upload / Display -->
             <?php if ($presignedUrl == null) { ?>
-                <p><strong>Photo:</strong><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
+                <p><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
 
                 <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
                     <label for="photo">Upload your photo:</label>
@@ -118,8 +110,17 @@ $past_result = $past_stmt->get_result();
                     <button type="submit">Upload</button>
                 </form>-->
             <?php } else { ?>
-                <p><strong>Photo:</strong><img src="<?php echo htmlspecialchars($presignedUrl); ?>" alt="Profile Photo" class="profile-photo">
+                <p><img src="<?php echo htmlspecialchars($presignedUrl); ?>" alt="Profile Photo" class="profile-photo">
             <?php } ?>
+            <p><strong>Student ID:</strong> <?php echo $_SESSION['id']; ?></p>
+            <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
+            <p><strong>Phone Number:</strong> 
+                <?php echo !empty($phonenumber) ? htmlspecialchars($phonenumber) : 'Please complete your information'; ?>
+            </p>
+            <p><strong>Email:</strong> 
+                <?php echo !empty($email) ? htmlspecialchars($email) : 'Please complete your information'; ?>
+            </p>
+            
             <button id="edit-inf-butt" class="edit">Edit</button>
         </div>
         <!-- Reservations Info Section -->
