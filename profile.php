@@ -36,13 +36,18 @@ if ($stmt->fetch()) {
 
 $stmt->close();
 
+$presignedUrl = '';
 $bucketName = "lrsys-bucket";
-try {
-    $presignedUrl = generatePresignedUrl($bucketName, $photo_path, '+60 minutes');
 
-} catch (Exception $e) {
-    echo "Error: " . $e->getMessage();
+if ($photo_path){
+    try {
+        $presignedUrl = generatePresignedUrl($bucketName, $photo_path, '+60 minutes');
+    
+    } catch (Exception $e) {
+        echo "Error: " . $e->getMessage();
+    }
 }
+
 
 //upcoming reservation
 date_default_timezone_set('Asia/Seoul');

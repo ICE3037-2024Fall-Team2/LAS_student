@@ -198,6 +198,7 @@ $conn->close();
             display: block;
             font-size: 18px;
             margin-bottom: 10px;
+            font-weight: bold;
         }
 
         table {
@@ -266,6 +267,13 @@ $conn->close();
         .fill label {
             margin-right: 10px;
         }
+
+        @media (max-width: 800px) {
+            select {
+                width: auto; 
+            }
+        }
+
     </style>
 </head>
 <body>

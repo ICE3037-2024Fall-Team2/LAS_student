@@ -133,6 +133,7 @@ $conn->close();
             display: block;
             font-size: 18px;
             margin-bottom: 10px;
+            font-weight: bold;
         }
 
         p{
@@ -186,6 +187,26 @@ $conn->close();
             display: block;
             text-align: center;
             margin-bottom: 10px;
+        }
+
+        @media (max-width: 800px) {
+            .fill {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                justify-content: flex-start; 
+                gap: 2px;
+            }
+
+            .fill input{
+                margin-bottom: 5px;
+            }
+
+
+            button[type="submit"] {
+                margin-top: 5px;
+            }
         }
     </style>
 </head>
