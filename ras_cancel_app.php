@@ -33,10 +33,11 @@ if (isset($_POST['reservation_id'])) {
 }
 
 // Fetch all reservations
-$sql = "SELECT reservation_id, lab_id, user_id, date, time, verified 
-        FROM reservations 
-        WHERE date >= CURDATE() 
-        ORDER BY date ASC, time ASC";
+$sql = "SELECT r.reservation_id, r.lab_id, r.user_id, r.date, r.time, r.verified, rm.rejected_message 
+        FROM reservations r
+        LEFT JOIN rejected_messages rm ON r.reservation_id = rm.reservation_id
+        WHERE r.date >= CURDATE()
+        ORDER BY r.date ASC, r.time ASC";
 $result = $conn->query($sql);
 ?>
 
@@ -44,9 +45,10 @@ $result = $conn->query($sql);
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cancel Reservation</title>
+    <title>Manage Reservations</title>
     <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
     <style>
+        /* Global Styles */
         body {
             font-family: Arial, sans-serif;
             text-align: center;
@@ -65,13 +67,14 @@ $result = $conn->query($sql);
             margin-bottom: 10px;
         }
 
+        /* Form Styles */
         form {
             display: inline-block;
             text-align: center;
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: center; 
+            justify-content: center;
             margin: 10px 0px;
             gap: 5px;
         }
@@ -91,20 +94,7 @@ $result = $conn->query($sql);
             font-size: 16px;
         }
 
-        button[type="submit"] {
-            background-color: #008000; /* Green color */
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        button[type="submit"]:hover {
-            background-color: #006600; /* Darker green on hover */
-        }
-
+        /* Table Styles */
         table {
             width: 80%;
             border-collapse: collapse;
@@ -126,33 +116,76 @@ $result = $conn->query($sql);
             background-color: #f2f2f2;
         }
 
-        .refuse-button {
-            background-color: #dc3545;
-            color: white;
-            padding: 5px 10px;
+        /* Button Styles */
+        .approve-button, .reject-button {
+            padding: 5px 15px;
+            font-size: 14px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
         }
 
-        .refused {
-            background-color: #f8d7da;
-            color: #721c24;
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
+        .approve-button {
+            background-color: #28a745; /* Green for Approve */
+            color: white;
         }
 
-        a {
-            color: #0B3D0B;
-            text-decoration: underline;
-            font-size: 0.9em;
-            display: block;
+        .reject-button {
+            background-color: #dc3545; /* Red for Reject */
+            color: white;
+        }
+
+        .approve-button:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        .reject-button:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+
+        /* Modal Styles */
+        #modalOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        #refuseModal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
             text-align: center;
+        }
+
+        #refuseModal h3 {
             margin-bottom: 10px;
-            text-align: center;
         }
 
+        #refuseModal form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        #refuseModal form div {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        /* Media Queries for Responsiveness */
         @media (max-width: 800px) {
             form {
                 display: inline-block;
@@ -161,7 +194,7 @@ $result = $conn->query($sql);
                 flex-direction: column;
                 align-items: center;
                 text-align: center;
-                justify-content: flex-end; 
+                justify-content: flex-end;
                 gap: 2px;
                 margin: 2px 0px;
             }
@@ -169,33 +202,48 @@ $result = $conn->query($sql);
 
     </style>
     <script>
-        function openRefusePopup(reservationId, reason = '') {
+        let isEditMode = false; // Tracks whether modal is in Edit mode
+
+        function openRefusePopup(reservationId, rejectedMessage = '') {
             const modal = document.getElementById('refuseModal');
-            const reasonInput = document.getElementById('refuseReasonInput');
+            const modalOverlay = document.getElementById('modalOverlay');
             const modalSubmit = document.getElementById('modalSubmit');
-            
-            reasonInput.value = reason; // Set reason if provided
-            modalSubmit.dataset.reservationId = reservationId;
-            
-            document.getElementById('modalOverlay').style.display = 'block';
+            const modalReasonInput = document.getElementById('refuseReasonInput');
+            const modalSubmitButton = document.getElementById('modalSubmitButton');
+
+            modalSubmit.value = reservationId;
+            modalReasonInput.value = rejectedMessage; // Load rejection message if in edit mode
+            modalSubmitButton.textContent = isEditMode ? 'Save' : 'Submit';
+
+            modalOverlay.style.display = 'block';
             modal.style.display = 'block';
         }
 
         function closeRefusePopup() {
-            document.getElementById('modalOverlay').style.display = 'none';
-            document.getElementById('refuseModal').style.display = 'none';
+            const modal = document.getElementById('refuseModal');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalReasonInput = document.getElementById('refuseReasonInput');
+
+            modal.style.display = 'none';
+            modalOverlay.style.display = 'none';
+            modalReasonInput.value = ''; // Clear input field
         }
+
+        function setEditMode(edit) {
+            isEditMode = edit;
+        }
+
     </script>
 </head>
 <body>
-    <h2>Cancel a Reservation</h2>
+    <h2>Manage Reservations</h2>
     <div><a href="ras_admin_dash.php">Go back to dashboard</a></div>
 
-    <form method="POST" action="ras_cancel_app.php">
+    <!--form method="POST" action="ras_cancel_app.php">
         <label for="reservation_id">Reservation ID:</label>
         <input type="text" id="reservation_id" name="reservation_id" required><br>
         <button type="submit">Cancel Reservation</button>
-    </form>
+    </form-->
 
     <h2>Existing Reservations</h2>
     <table border="1" cellpadding="10">
@@ -206,7 +254,8 @@ $result = $conn->query($sql);
                 <th>User ID</th>
                 <th>Date</th>
                 <th>Time</th>
-                <th>Verified</th>
+                <th>Verify</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
@@ -221,24 +270,23 @@ $result = $conn->query($sql);
                     echo "<td>" . htmlspecialchars($row['user_id']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['date']) . "</td>";
                     echo "<td>" . htmlspecialchars($row['time']) . "</td>";
-                    if ($row['verified']) {
-                        echo "<td>Yes</td>";
+                    
+                    if ($row['verified'] == 2) {
+                        echo "<td>Rejected</td>";
+                    } elseif ($row['verified'] == 1) {
+                        echo "<td>Verified</td>";
                     } else {
-                        echo "<td>";
-                        echo "<form action='ras_verify_app.php' method='post' style='display:inline;'>";
-                        echo "<input type='hidden' name='reservation_id' value='" . htmlspecialchars($row['reservation_id']) . "'>";
-                        echo "<button type='submit' class='no-btn'>No</button>";
-                        echo "</form>";
-                        echo "</td>";
+                        echo "<td><form action='ras_verify_app.php' method='post' style='margin: 0;'>
+                                <input type='hidden' name='reservation_id' value='" . htmlspecialchars($row['reservation_id']) . "'>
+                                <button type='submit' class='approve-button'>Approve</button>
+                              </form></td>";
                     }
-
-                    // Refused reservation check
-                    if (!empty($row['refused_reason'])) {
-                        echo "<td><span class='refused' onclick=\"openRefusePopup('" . htmlspecialchars($row['reservation_id']) . "', '" . htmlspecialchars($row['refused_reason']) . "')\">Refused</span></td>";
+                    
+                    if ($row['verified'] == 2) {
+                        echo "<td><button class='reject-button' onclick=\"setEditMode(true); openRefusePopup('" . htmlspecialchars($row['reservation_id']) . "', '" . htmlspecialchars($row['rejected_message']) . "')\">Edit Message</button></td>";
                     } else {
-                        echo "<td><button class='refuse-button' onclick=\"openRefusePopup('" . htmlspecialchars($row['reservation_id']) . "')\">Refuse</button></td>";
+                        echo "<td><button class='reject-button' onclick=\"setEditMode(false); openRefusePopup('" . htmlspecialchars($row['reservation_id']) . "')\">Reject</button></td>";
                     }
-
                     echo "</tr>";
                 }
             } else {
@@ -249,17 +297,22 @@ $result = $conn->query($sql);
     </table>
 
     <!-- Modal -->
-    <div id="modalOverlay" onclick="closeRefusePopup()"></div>
-    <div id="refuseModal">
-        <h3>Refuse Reservation</h3>
-        <form action="ras_refuse_app.php" method="post">
+    <div id="modalOverlay" style="display:none;" onclick="closeRefusePopup()"></div>
+    <div id="refuseModal" style="display:none;">
+        <h3 id="modalTitle">Reject Reservation</h3>
+        <form action="ras_reject_app.php" method="post">
             <input type="hidden" id="modalSubmit" name="reservation_id">
             <label for="refuseReasonInput">Reason:</label>
             <input type="text" id="refuseReasonInput" name="reason" required>
-            <button type="submit" class="refuse-button">Submit</button>
-            <button type="button" onclick="closeRefusePopup()">Cancel</button>
+            <div style="display: flex; justify-content: center; gap: 10px; margin-top: 10px;">
+                <button type="submit" id="modalSubmitButton" class="approve-button">Submit</button>
+                <button type="button" class="reject-button" onclick="closeRefusePopup()">Cancel</button>
+            </div>
         </form>
     </div>
+
+
+
 </body>
 </html>
 
