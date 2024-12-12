@@ -131,7 +131,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
             <!-- Photo Upload / Display -->
              <div class="personal-info">
                 <?php if ($presignedUrl == null) { ?>
-                    <p><img src="img/profile-user.png" alt="Profile Photo" class="profile-photo">
+                    <p><img src="img/profile-user.jpg" alt="Profile Photo" class="profile-photo">
                     <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
                         <label for="photo">Upload your photo:</label>
                         <input type="file" name="photo" id="photo"> 

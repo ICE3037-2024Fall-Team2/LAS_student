@@ -55,6 +55,50 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 'type' => 'success',
                 'message' => 'Reservation successfully created.'
             );
+
+            $admin_emails = [];
+            $sql_admin = "SELECT email FROM admin";
+            $result_admin = $conn->query($sql_admin);
+            if ($result_admin->num_rows > 0) {
+                while ($row = $result_admin->fetch_assoc()) {
+                    if (!empty($row['email'])) 
+                        $admin_emails[] = $row['email'];
+                    
+                }
+            }
+
+            $subject = "{$lab_id} New Reservation";
+            $body = "
+                <h1>New Reservation Created</h1>
+                <p><strong>Reservation ID:</strong> {$reservation_id}</p>
+                <p><strong>Student ID:</strong> {$user_id}</p>
+                <p><strong>Lab ID:</strong> {$lab_id}</p>
+                <p><strong>Time:</strong> {$selected_date} {$selected_time}</p>
+                <p>Please check the reservation at your most available time.</p>
+            ";
+
+            if (!empty($admin_emails)) {
+                try {
+                    require_once 'mailer.php'; 
+
+                    foreach ($admin_emails as $admin_email) {
+                        if (is_string($admin_email) && !empty($admin_email)) {
+                            $email_sent = sendEmail($admin_email, $subject, $body); 
+                            if ($email_sent) {
+                                error_log("Email sent successfully to $admin_email");
+                            } else {
+                                error_log("Failed to send email to $admin_email");
+                            }
+                        } else {
+                            error_log("Invalid email address: " . json_encode($admin_email));
+                        }
+                    }
+                } catch (Exception $e) {
+                    error_log("Mailer exception: " . $e->getMessage());
+                }
+            }
+            
+            
         } else {
             $_SESSION['toastr'] = array(
                 'type' => 'error',

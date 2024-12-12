@@ -42,8 +42,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
         // Use the current timestamp and user ID to generate a unique name
         //$photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension;
-        $photo_name = $_SESSION['id'] . "." . $file_extension;
+        $photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension; 
         $s3Key = $imgPathPrefix . $photo_name;
+
     
         try {
             // Upload the file to S3
