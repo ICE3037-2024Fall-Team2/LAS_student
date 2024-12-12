@@ -85,7 +85,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
         <h1>Welcome, <?= htmlspecialchars($_SESSION['username']) ?></h1>
         
         <ul>
-            <li><a href="ras_cancel_app.php">Cancel Reservation</a></li>
+            <li><a href="ras_cancel_app.php">Manage Reservations</a></li>
             <li><a href="ras_student_list.php">Assign Lab</a></li>
             <li><a href="ras_lab_list.php">Manage Labs</a></li>
             <li><a href="ras_change_admin_list.php">Manage Admins</a></li>
