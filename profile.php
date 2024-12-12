@@ -51,18 +51,31 @@ if ($photo_path){
 
 //upcoming reservation
 date_default_timezone_set('Asia/Seoul');
-$today = new DateTime();
-$today_str = $today->format('Y-m-d');
-$future_sql = "SELECT reservation_id, lab_id, date, time FROM reservations WHERE user_id = ? AND date >= ? ORDER BY date, time";
+
+$now = new DateTime();
+$now_str = $now->format('Y-m-d H:i:s');
+
+$past_date = $now->modify('-30 days')->format('Y-m-d H:i:s');
+
+$future_sql = "SELECT reservation_id, lab_id, date, time, verified, checked
+               FROM reservations 
+               WHERE user_id = ? 
+               AND CONCAT(date, ' ', time) >= ? 
+               ORDER BY date, time";
 $future_stmt = $conn->prepare($future_sql);
-$future_stmt->bind_param("ss", $_SESSION['id'], $today_str);
+$future_stmt->bind_param("ss", $_SESSION['id'], $now_str);
 $future_stmt->execute();
 $future_result = $future_stmt->get_result();
 
-$past_date = $today->modify('-30 days')->format('Y-m-d'); // Correctly calculate the date 30 days ago
-$past_sql = "SELECT reservation_id, lab_id, date, time, verified FROM reservations WHERE user_id = ? AND date >= ? AND date < ? ORDER BY date DESC, time";
+//past reservations
+$past_sql = "SELECT reservation_id, lab_id, date, time, verified, checked 
+             FROM reservations 
+             WHERE user_id = ? 
+             AND CONCAT(date, ' ', time) >= ? 
+             AND CONCAT(date, ' ', time) < ? 
+             ORDER BY date DESC, time";
 $past_stmt = $conn->prepare($past_sql);
-$past_stmt->bind_param("sss", $_SESSION['id'], $past_date, $today_str); // Use $past_date and $today_str
+$past_stmt->bind_param("sss", $_SESSION['id'], $past_date, $now_str);
 $past_stmt->execute();
 $past_result = $past_stmt->get_result();
 
@@ -155,7 +168,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                         <th>Lab</th>
                         <th>Date</th>
                         <th>Time</th>
-                        <th>Action</th>
+                        <th>Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -166,14 +179,25 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                                 <td><?php echo htmlspecialchars($row['date']); ?></td>
                                 <td><?php echo htmlspecialchars($row['time']); ?></td>
                                 <td>
-                                    <form action="generate_qr.php" method="post" class="action-form">
-                                        <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
-                                        <button type="submit" class="qr-button">QR</button>
-                                    </form>
-                                    <form action="rsv_cancel.php" method="post" class="action-form">
-                                        <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
-                                        <button type="submit" class="cancel-button">Cancel</button>
-                                    </form>
+                                    <?php 
+                                    if ($row['verified'] == 0) {
+                                        echo 'Processing';
+                                    } elseif ($row['verified'] == 1) {
+                                        ?>
+                                        <form action="generate_qr.php" method="post" class="action-form">
+                                            <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
+                                            <button type="submit" class="qr-button">QR</button>
+                                        </form>
+                                        <form action="rsv_cancel.php" method="post" class="action-form">
+                                            <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
+                                            <button type="submit" class="cancel-button">Cancel</button>
+                                        </form>
+                                        <?php
+                                    } elseif ($row['verified'] == 2) {
+                                        $reservation_id = htmlspecialchars($row['reservation_id']);
+                                        echo "<a href='#' class='rejected-link' onclick=\"showRejectedMessage('$reservation_id', event)\">Rejected</a>";
+                                    }
+                                    ?>
                                 </td>
                             </tr>
                         <?php } ?>
@@ -185,6 +209,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                 </tbody>
             </table>
         </div>
+
 
         <!-- Past Reservations Section -->
         <div id="past-reservations">
@@ -207,13 +232,13 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                                 <td><?php echo htmlspecialchars($row['time']); ?></td>
                                 <td>
                                     <?php 
-                                        if ($row['verified'] == 0) {
-                                            echo 'Absent';
-                                        } elseif ($row['verified'] == 1) {
-                                            echo 'Attended';
-                                        } elseif ($row['verified'] == 2) {
+                                        if ($row['verified'] == 2) {
                                             $reservation_id = htmlspecialchars($row['reservation_id']);
                                             echo "<a href='#' class='rejected-link' onclick=\"showRejectedMessage('$reservation_id', event)\">Rejected</a>";
+                                        } elseif ($row['checked'] == 0) {
+                                            echo 'Absent';
+                                        } elseif ($row['checked'] == 1) {
+                                            echo 'Attended';
                                         }
                                     ?>
                                 </td>
