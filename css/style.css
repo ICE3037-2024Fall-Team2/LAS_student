@@ -63,7 +63,9 @@ body, ul, li, a, div, nav, h1, h2, h3, h4, span, p, address, footer, button {   
     border-bottom:1px solid #e0e0e0;
 }
 
-#login_wrapper .loginForm .inputText + .inputText { border-bottom: 0; }
+#login_wrapper .loginForm .inputText:last-child {
+  border-bottom: 0;
+}
 
 #login_wrapper .loginForm .inputText label {
   position: absolute;
