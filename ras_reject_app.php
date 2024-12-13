@@ -71,9 +71,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <p><strong>Time:</strong> {$reservation_time}</p><br>
                     <p><strong>Reason for rejection:</strong></p>
                     <blockquote>{$rejected_message}</blockquote>
-                    <br>
-                    <p>This email message was auto-generated. Please do not respond.</p><p>If you need additional information, please visit our website.</p>
                     <hr><br>
+                    <p>This email message was auto-generated. Please do not respond.</p><p>If you need additional information, please visit our website.</p>
+                    <br>
                     <p>Sincerely,</p><br>
                     <p>Sungkyunkwan University</p>
                     <p>Lab Reservation System</p>
