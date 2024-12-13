@@ -10,19 +10,20 @@
         <div class="dropdown" id="userMenu">
             <i class="fa-solid fa-x close-dropdown" onclick="closeMenu()"></i>
             <h1>Menu</h1>
+            <hr class="first-child">
             <!-- checks if the current page is profile.php -->
             <?php
             $currentPage = basename($_SERVER['PHP_SELF']); // gets the current file name
             if ($currentPage === 'profile.php'): ?>
-                <a href="index.php" class="first-child">Reservation page</a>
+                <a href="index.php" >Reservation page</a>
             <?php else: ?>
-                <a href="profile.php" class="first-child">Account Info</a>
+                <a href="profile.php" >Account Info</a>
             <?php endif; ?>
-            <hr>
+            <hr class="second-child">
             <a href="profile.php#reservations-info">Upcoming Reservations</a>
             <a href="profile.php#past-reservations">Past Reservations</a>
             <a href="profile.php#change-password">Change Password</a>
-            <hr>
+            <hr class="first-child">
             <a href="logout.php" class="logout">Logout</a>
         </div>
     </div>

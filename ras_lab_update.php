@@ -3,13 +3,13 @@ session_start();
 
 // Database connection
 require 'db_connect.php';
-require 's3_upload.php'; 
+require 's3_update.php'; 
 
 $bucketName = "lrsys-bucket"; 
-$imgPathPrefix = "img_path/"; 
+$imgPathPrefix = "lab_img/";
 
-// Initialize variables
-$lab_id = $_POST['add_id'];
+// Collect input fields
+$lab_id = $_POST['add_id'] ?? null;
 $lab_name = $_POST['lab_name'] ?? null;
 $address = $_POST['address'] ?? null;
 $capacity = $_POST['capacity'] ?? null;
@@ -17,15 +17,15 @@ $photo = $_FILES['photo']['tmp_name'] ?? null;
 
 // Check if lab_id is provided
 if (empty($lab_id)) {
-    $_SESSION['toastr'] = array(
+    $_SESSION['toastr'] = [
         'type' => 'error',
         'message' => 'Lab ID is required.'
-    );
+    ];
     header("Location: ras_lab_list.php");
     exit();
 }
 
-// Check if lab exists in database
+// Check if the lab already exists
 $query = "SELECT * FROM labs WHERE lab_id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("s", $lab_id);
@@ -35,7 +35,7 @@ $lab_exists = $result->num_rows > 0;
 $stmt->close();
 
 if ($lab_exists) {
-    // Lab exists, update only the provided fields
+    // Update existing lab
     $update_fields = [];
     $update_params = [];
     $param_types = "";
@@ -58,29 +58,23 @@ if ($lab_exists) {
         $param_types .= "i";
     }
 
-    if (!empty($photo)) {
-        $photoName = basename($_FILES['photo']['name']); 
-        $photo_path = "uploads/" . $photoName;
-    
-        $currentTimestamp = date('Ymd_His'); 
-        $newPhotoName = $currentTimestamp . "_" . $photoName; 
-    
-        if (move_uploaded_file($photo, $photo_path)) {
-            try {
-                $s3Key = $imgPathPrefix . $newPhotoName;
+    if (!empty($photo) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        $file_extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+        $photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension; 
+        $s3Key = $imgPathPrefix . $photo_name;
 
-                $uploadedKey = uploadToS3($photo_path, $bucketName, $s3Key);
-    
-                $update_fields[] = "img_path = ?";
-                $update_params[] = $uploadedKey; 
-                $param_types .= "s";
-    
-                unlink($photo_path);
-            } catch (Exception $e) {
-                die("Error: " . $e->getMessage());
-            }
-        } else {
-            die("Failed to move uploaded file.");
+        try {
+            $uploadedKey = uploadToS3($photo, $bucketName, $s3Key,'lab');
+            $update_fields[] = "img_path = ?";
+            $update_params[] = $uploadedKey;
+            $param_types .= "s";
+        } catch (Exception $e) {
+            $_SESSION['toastr'] = [
+                'type' => 'error',
+                'message' => 'Photo upload failed: ' . htmlspecialchars($e->getMessage())
+            ];
+            header("Location: ras_lab_list.php");
+            exit();
         }
     }
 
@@ -88,50 +82,41 @@ if ($lab_exists) {
         $update_query = "UPDATE labs SET " . implode(", ", $update_fields) . " WHERE lab_id = ?";
         $param_types .= "s";
         $update_params[] = $lab_id;
-        
+
         $stmt = $conn->prepare($update_query);
         $stmt->bind_param($param_types, ...$update_params);
         $stmt->execute();
         $stmt->close();
 
-        $_SESSION['toastr'] = array(
+        $_SESSION['toastr'] = [
             'type' => 'success',
             'message' => 'Lab updated successfully.'
-        );
+        ];
     } else {
-        $_SESSION['toastr'] = array(
+        $_SESSION['toastr'] = [
             'type' => 'error',
             'message' => 'No fields provided for update.'
-        );
+        ];
     }
-
 } else {
-    // Lab does not exist, check required fields
+    // Create new lab
     if (!empty($lab_name) && !empty($address) && !empty($capacity)) {
         $photo_path = null;
-        if (!empty($photo)) {
-            $photoName = basename($_FILES['photo']['name']); 
-            $photo_path = "uploads/" . $photoName;
-        
-            $currentTimestamp = date('Ymd_His'); 
-            $newPhotoName = $currentTimestamp . "_" . $photoName; 
-        
-            if (move_uploaded_file($photo, $photo_path)) {
-                try {
-                    $s3Key = $imgPathPrefix . $newPhotoName;
-    
-                    $uploadedKey = uploadToS3($photo_path, $bucketName, $s3Key);
-        
-                    $update_fields[] = "img_path = ?";
-                    $update_params[] = $uploadedKey; 
-                    $param_types .= "s";
-        
-                    unlink($photo_path);
-                } catch (Exception $e) {
-                    die("Error: " . $e->getMessage());
-                }
-            } else {
-                die("Failed to move uploaded file.");
+
+        if (!empty($photo) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+            $file_extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+            $photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension; 
+            $s3Key = $imgPathPrefix . $photo_name;
+
+            try {
+                $photo_path = uploadToS3($photo, $bucketName, $s3Key);
+            } catch (Exception $e) {
+                $_SESSION['toastr'] = [
+                    'type' => 'error',
+                    'message' => 'Photo upload failed: ' . htmlspecialchars($e->getMessage())
+                ];
+                header("Location: ras_lab_list.php");
+                exit();
             }
         }
 
@@ -141,18 +126,18 @@ if ($lab_exists) {
         $stmt->execute();
         $stmt->close();
 
-        $_SESSION['toastr'] = array(
+        $_SESSION['toastr'] = [
             'type' => 'success',
             'message' => 'Lab added successfully.'
-        );
+        ];
     } else {
-        $_SESSION['toastr'] = array(
+        $_SESSION['toastr'] = [
             'type' => 'error',
             'message' => 'Please fill in all required fields to add a new lab (except photo).'
-        );
+        ];
     }
 }
+
 $conn->close();
 header("Location: ras_lab_list.php");
 exit();
-?>

@@ -1,11 +1,11 @@
 <?php
 //require 'vendor/autoload.php'; // Ensure Composer's autoload is loaded
-require __DIR__ . '/../vendor/autoload.php'; // 引用共享的 autoload.php
+require __DIR__ . '/../vendor/autoload.php'; 
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 
-function uploadToS3($localFilePath, $bucketName, $s3Key)
+function uploadToS3($localFilePath, $bucketName, $s3Key, $type)
 {
     $awsKey = getenv('AWS_ACCESS_KEY_ID');
     $awsSecret = getenv('AWS_SECRET_ACCESS_KEY');
@@ -22,20 +22,30 @@ function uploadToS3($localFilePath, $bucketName, $s3Key)
             'key' => $awsKey,
             'secret' => $awsSecret,
         ],
+        'debug' => false,
     ]);
 
     try {
-        // Upload the file to S3
+        //error_log("Bucket: $bucketName, Key: $s3Key, File: $localFilePath");
+
         $result = $s3->putObject([
             'Bucket' => $bucketName,
             'Key' => $s3Key,
             'SourceFile' => $localFilePath,
-            'ACL' => 'private', // Ensure the file is private
+            'ACL' => 'private',
         ]);
 
-        // Return the S3 Key (not the full URL)
-        return $s3Key;
+        error_log("S3 Upload Success: " . json_encode($result));
+
+        if ($type == 'user'){
+            return $s3Key;
+        } elseif ($type == 'lab'){
+            return $result['ObjectURL'];
+        }
+
     } catch (AwsException $e) {
-        throw new Exception("Error uploading file to S3: " . $e->getMessage());
+        error_log("AWS SDK Error: " . $e->getAwsErrorMessage());
+        error_log("AWS SDK Trace: " . $e->getTraceAsString());
+        throw new Exception("Error uploading to S3: " . $e->getMessage());
     }
 }

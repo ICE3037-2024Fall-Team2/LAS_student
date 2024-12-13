@@ -35,6 +35,8 @@
     font-size: 35px;
     cursor: pointer;
     color: white;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -96,6 +98,8 @@
     color: black;
     float: right;
     padding: 10px 15px 0 0;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* Main content styling */
@@ -165,20 +169,28 @@
         right: 0;
     }
 
-    .dropdown a.first-child{
-        padding-top: 20%;
-    }
 
     .dropdown a {
         font-size: 120%;
         margin-bottom: 5%;
     }
 
-    .dropdown hr{
+    .dropdown hr {
         display: block;
         width: 90%;
         float: left;
-        margin: 15% auto;
+        margin: 15% auto 13% auto;
+        /* height: 5px; */
+        background-color: gray;
+        color: lightgray;
+    }
+
+    .dropdown .first-child {
+        margin-bottom: 10%;
+    }
+
+    .dropdown .second-child {
+        margin-top: 3%;
     }
 
     .dropdown h1 {
@@ -201,5 +213,7 @@
     .dropdown i.fa-solid.fa-x.close-dropdown {
         padding: 10% 10% 0 0;
         font-size: 20px;
+        outline: none;
+        -webkit-tap-highlight-color: transparent;
     }
 }

@@ -35,20 +35,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         return; 
     }
 
+    if (isset($_FILES['photo-upload'])) {
+        error_log("File upload detected");
+        if ($_FILES['photo-upload']['error'] === UPLOAD_ERR_OK) {
+            error_log("File upload is valid");
+        } else {
+            error_log("File upload error code: " . $_FILES['photo-upload']['error']);
+        }
+    } else {
+        error_log("No file upload detected");
+    }
+    
 
-    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-        $photo_tmp_name = $_FILES['photo']['tmp_name'];
-        $file_extension = pathinfo($_FILES['photo']['name'], PATHINFO_EXTENSION);
+    if (isset($_FILES['photo-upload']) && $_FILES['photo-upload']['error'] === UPLOAD_ERR_OK) {
+        $photo_tmp_name = $_FILES['photo-upload']['tmp_name'];
+        $file_extension = pathinfo($_FILES['photo-upload']['name'], PATHINFO_EXTENSION);
     
         // Use the current timestamp and user ID to generate a unique name
         //$photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension;
         $photo_name = $_SESSION['id'] . "_" . time() . "." . $file_extension; 
         $s3Key = $imgPathPrefix . $photo_name;
-
+        error_log("$photo_tmp_name, $bucketName, $s3Key");
     
         try {
+
             // Upload the file to S3
-            $uploadedKey = uploadToS3($photo_tmp_name, $bucketName, $s3Key);
+            $uploadedKey = uploadToS3($photo_tmp_name, $bucketName, $s3Key,'user');
     
             // Update the photo path with the S3 key
             $photo_path = $uploadedKey;
@@ -69,7 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $check_stmt->store_result();
 
     if ($check_stmt->num_rows > 0) {
-
+        error_log("$photo_path");
         if ($photo_path) {
             $sql = "UPDATE user_info SET username = ?, phonenumber = ?, email = ?, photo_path = ? WHERE id = ?";
             $stmt = $conn->prepare($sql);

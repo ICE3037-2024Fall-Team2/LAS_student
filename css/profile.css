@@ -235,12 +235,16 @@
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .close-btn:hover,
 .close-btn:focus {
     color: black;
     text-decoration: none;
+    outline: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .qr-cancel-button {

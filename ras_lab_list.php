@@ -215,7 +215,7 @@ $conn->close();
     <div><a href="ras_admin_dash.php">Go back to dashboad</a></div>
 
     <h2>Update Lab</h2>
-    <form method="POST" action="ras_lab_update.php" >
+    <form method="POST" action="ras_lab_update.php" enctype="multipart/form-data">
         <div class="fill">
             <label for="lab_id">ID:</label>
             <input type="text" id="add_id" name="add_id" value="" 

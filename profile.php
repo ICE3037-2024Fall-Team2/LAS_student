@@ -211,7 +211,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
 
         <!-- Past Reservations Section -->
         <div id="past-reservations">
-            <h2>Past Reservations (Past 30days)</h2>
+            <h2>Past Reservations <br> (Past 30days)</h2>
             <table border="1">
                 <thead>
                     <tr>
