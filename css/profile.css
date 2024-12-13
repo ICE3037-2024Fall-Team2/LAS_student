@@ -71,9 +71,9 @@
 
 
 .edit {
-    padding: 5px 15px; 
-    margin: 15px 15px 15px auto;
-    cursor: pointer; 
+    padding: 5px 15px;
+    margin: 3% 30% 3% auto;
+    cursor: pointer;
     background-color: #508e0d;
     color: white;
     border: none;
@@ -280,4 +280,10 @@ a.rejected-link:hover {
 a.rejected-link:active {
     color: blue; 
     text-decoration: underline;
+}
+
+@media (max-width: 767px) {
+    #change-password input {
+        min-width: 93%;
+    }    
 }
