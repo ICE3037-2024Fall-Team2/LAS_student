@@ -29,7 +29,7 @@ The **Lab Reservation System** is a web-based platform designed to simplify labo
 
 
 ## System Flow
-![System Architecture](img/system_flow.png)  
+![System Architecture](img/system_flow.png)
 (The diagram shows the interaction between the frontend, backend, database, and hardware components.)
 
 ---
@@ -44,6 +44,11 @@ The **Lab Reservation System** is a web-based platform designed to simplify labo
 - **Manage Reservations**: Approve or reject lab bookings and send automated notifications.
 - **Lab Scheduling**: Manage lab availability and prevent scheduling conflicts.
 - **Admin Tools**: Add or remove administrators to handle lab management.
+
+## Frontend Flowchart
+Below is a flowchart that illustrates the sequence of interactions and transitions between different user interfaces or screens in our application.
+
+![Frontend Flowchart](img/rep_Frontend%20Diag.png)
 
 ---
 
