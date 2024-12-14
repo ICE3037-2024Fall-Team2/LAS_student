@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -59,7 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     ";
 
 
-            require_once 'mailer.php';
+            require_once '../backend/mailer.php';
             try {
                 sendEmail($user_email, $title, $body);
                 error_log("Rejection email sent successfully to {$user_email}");

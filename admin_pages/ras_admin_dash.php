@@ -3,7 +3,7 @@ session_start();
 
 // Redirect if the admin is not logged in
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: login.php');
+    header('Location: ../student_pages/login.php');
     exit;
 }
 
@@ -15,7 +15,7 @@ if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== tru
 <head>
     <meta charset="UTF-8">
     <title>SKKU LRS - Admin Dashboard</title>
-    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
+    <link rel="icon" href="../img/admin-icon.png" type="image/x-icon">
 
     <style>
         /* CSS for Admin Dashboard */

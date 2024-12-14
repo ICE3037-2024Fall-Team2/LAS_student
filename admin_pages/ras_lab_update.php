@@ -2,11 +2,11 @@
 session_start();
 
 // Database connection
-require 'db_connect.php';
-require 's3_update.php'; 
+require '../backend/db_connect.php';
+require '../backend/s3_update.php';
 
 $bucketName = "lrsys-bucket"; 
-$imgPathPrefix = "lab_img/";
+$imgPathPrefix = "../lab_img/";
 
 // Collect input fields
 $lab_id = $_POST['add_id'] ?? null;

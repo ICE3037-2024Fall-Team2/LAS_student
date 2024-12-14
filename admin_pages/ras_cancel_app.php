@@ -3,7 +3,7 @@ session_start();
 
 // Check if the admin is logged in
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: ras_admin_login.php');
+    header('Location: ../student_pages/login.php');
     exit;
 }
 
@@ -15,7 +15,7 @@ if (!isset($_SESSION['pw_verified']) || $_SESSION['pw_verified'] !== true) {
 }
 
 // Database connection
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 /*if (isset($_POST['reservation_id'])) {
     $reservation_id = $_POST['reservation_id'];
@@ -55,7 +55,7 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <title>Manage Reservations</title>
-    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
+    <link rel="icon" href="../img/admin-icon.png" type="image/x-icon">
     <style>
         /* Global Styles */
         body {

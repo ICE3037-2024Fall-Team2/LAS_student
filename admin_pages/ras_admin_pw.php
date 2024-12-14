@@ -2,10 +2,10 @@
 session_start();
 
 
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
-    header('Location: ras_admin_login.php');
+    header('Location: ../student_pages/login.php');
     exit;
 }
 
@@ -36,7 +36,7 @@ if (isset($_POST['password'])) {
 <head>
     <meta charset="UTF-8">
     <title>Confirm Password</title>
-    <link rel="icon" href="img/admin-icon.png" type="image/x-icon">
+    <link rel="icon" href="../img/admin-icon.png" type="image/x-icon">
     <style>
       body {
     font-family: Arial, sans-serif;

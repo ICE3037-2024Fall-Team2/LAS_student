@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 // Check if form is submitted with required fields
 if (isset($_POST['admin_id']) && isset($_POST['password'])) {
