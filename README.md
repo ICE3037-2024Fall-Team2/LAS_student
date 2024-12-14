@@ -43,7 +43,7 @@ The **Lab Reservation System** is a web-based platform designed to simplify labo
 ### Admin
 - **Manage Reservations**: Approve or reject lab bookings and send automated notifications.
 - **Lab Scheduling**: Manage lab availability and prevent scheduling conflicts.
-- **Admin Tools**: Add or remove administrators to handle lab management.
+- **Admin Tools**: Add or remove administrators for lab management.
 
 ## Frontend Flowchart
 Below is a flowchart that illustrates the sequence of interactions and transitions between different user interfaces or screens in our application.
