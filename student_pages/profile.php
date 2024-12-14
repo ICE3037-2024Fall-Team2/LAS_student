@@ -8,8 +8,8 @@ if (!isset($_SESSION['username'])) {
 $toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
 unset($_SESSION['toastr']);
 
-require 'db_connect.php';
-require 's3_connect.php';
+require '../backend/db_connect.php';
+require '../backend/s3_connect.php';
 $id = $_SESSION['id'];
 
 
@@ -100,7 +100,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
-    <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
+    <link rel="icon" href="../img/mini-logo-color.png" type="image/x-icon">
     <!-- Toastr -->
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
@@ -108,9 +108,9 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/index.css"> 
-    <link rel="stylesheet" href="css/profile.css"> 
+    <link rel="stylesheet" href="../css/style.css"> 
+    <link rel="stylesheet" href="../css/index.css"> 
+    <link rel="stylesheet" href="../css/profile.css"> 
     <!-- Styles for profile page -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
@@ -131,7 +131,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
             <!-- Photo Upload / Display -->
              <div class="personal-info">
                 <?php if ($presignedUrl == null) { ?>
-                    <p><img src="img/profile-user.jpg" alt="Profile Photo" class="profile-photo">
+                    <p><img src="../img/profile-user.jpg" alt="Profile Photo" class="profile-photo">
                     <!--<form action="upload_photo.php" method="post" enctype="multipart/form-data">
                         <label for="photo">Upload your photo:</label>
                         <input type="file" name="photo" id="photo"> 
@@ -186,7 +186,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
                                         ?>
                                         <button class="qr-button" onclick="openQrModal('<?php echo $row['reservation_id']; ?>')">QR</button>
 
-                                        <form action="rsv_cancel.php" method="post" class="action-form">
+                                        <form action="../backend/rsv_cancel.php" method="post" class="action-form">
                                             <input type="hidden" name="reservation_id" value="<?php echo $row['reservation_id']; ?>">
                                             <button type="submit" class="cancel-button">Cancel</button>
                                         </form>
@@ -259,7 +259,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
         <!-- Change Password Section -->
         <div id="change-password">
             <h2>Change Password</h2>
-            <form id="change-password-form" action="change_password.php" method="post">
+            <form id="change-password-form" action="../backend/change_password.php" method="post">
                 <div>
                     <label for="current-password">Current Password:</label>
                     <input type="password" name="current-password" id="current-password" required>
@@ -302,7 +302,7 @@ if (isset($_GET['action']) && $_GET['action'] === 'getRejectedMessage' && isset(
         // Replace content with an edit form
         accountInfoDiv.innerHTML = `
             <h2>Edit Account Info</h2>
-            <form id="edit-form" action="update_account.php" method="POST" enctype="multipart/form-data">
+            <form id="edit-form" action="../backend/update_account.php" method="POST" enctype="multipart/form-data">
                 <p><strong>Student ID:</strong> <?php echo $_SESSION['id']; ?></p>
                 <p><strong>Username:</strong> <?php echo $_SESSION['username']; ?></p>
 

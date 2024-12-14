@@ -1,7 +1,7 @@
 <div id="header">
 <a class="no-style" href="index.php">
     <div class="left">
-            <img src="img/mini-logo-color2.png" alt="Logo" class="logo-circle">
+            <img src="../img/mini-logo-color2.png" alt="Logo" class="logo-circle">
             <span>Lab Reservation</span>
     </div>
     </a>
@@ -24,7 +24,7 @@
             <a href="profile.php#past-reservations">Past Reservations</a>
             <a href="profile.php#change-password">Change Password</a>
             <hr class="first-child">
-            <a href="logout.php" class="logout">Logout</a>
+            <a href="../backend/logout.php" class="logout">Logout</a>
         </div>
     </div>
 </div>

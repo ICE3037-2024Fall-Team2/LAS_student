@@ -9,7 +9,7 @@ if (!isset($_SESSION['id']) || !isset($_SESSION['username'])) {
 $toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
 unset($_SESSION['toastr']);
 
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 // Set timezone to Korea Standard Time (UTC+9)
 date_default_timezone_set('Asia/Seoul');
@@ -95,16 +95,16 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reservation - <?php echo htmlspecialchars($lab['lab_name']); ?></title>
-    <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
+    <link rel="icon" href="../img/mini-logo-color.png" type="image/x-icon">
     <!-- Toastr -->
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/js/toastr.js"></script>
 
     
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/index.css"> 
-    <link rel="stylesheet" href="css/reservation.css"> 
+    <link rel="stylesheet" href="../css/style.css"> 
+    <link rel="stylesheet" href="../css/index.css"> 
+    <link rel="stylesheet" href="../css/reservation.css"> 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -122,7 +122,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
         <div class="left-half">
             <h3><?php echo htmlspecialchars($lab['lab_name']); ?></h3>
             <div class="lab-image">
-                <img src="<?php echo htmlspecialchars($lab['img_path']); ?>"
+                <img src="../<?php echo htmlspecialchars($lab['img_path']); ?>"
                     alt="<?php echo htmlspecialchars($lab['lab_name']); ?>" />
             </div>
         </div>
@@ -183,7 +183,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
                 </table>
             </div>
 
-            <form action="reserve.php" method="post" id="reservationForm"
+            <form action="../backend/reserve.php" method="post" id="reservationForm"
                 style="display: flex; justify-content: center; gap: 20px;">
                 <!-- Back Button -->
                 <button type="button" id="back-button" onclick="window.location.href='index.php';">Back</button>
@@ -206,7 +206,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
 
             // Fetch timetables for the default date
             $.ajax({
-                url: 'fetch_timetables.php',
+                url: '../backend/fetch_timetables.php',
                 method: 'POST',
                 data: {
                     lab_id: '<?php echo $lab_id; ?>',
@@ -230,7 +230,7 @@ $unavailableTimetables = getUnavailableTimetables($conn, $lab_id, $today->format
 
                 // Fetch new timetables for that date
                 $.ajax({
-                    url: 'fetch_timetables.php',
+                    url: '../backend/fetch_timetables.php',
                     method: 'POST',
                     data: {
                         lab_id: '<?php echo $lab_id; ?>',

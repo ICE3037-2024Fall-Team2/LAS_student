@@ -10,7 +10,7 @@ if (!isset($_SESSION['username'])) {
 unset($_SESSION['toastr']);
 $id = $_SESSION['id'];
 
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 // Query to get all labs from the database
 //$sql = "SELECT lab_id, lab_name, address FROM labs";
@@ -40,9 +40,9 @@ $stmt->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lab Reservation</title>
-    <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="icon" href="../img/mini-logo-color.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/style.css"> 
+    <link rel="stylesheet" href="../css/index.css">
     <!-- importing styles for icons-->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"
         integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg=="

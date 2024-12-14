@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 // Handle register
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -65,8 +65,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKKU LRS - Register</title>
-    <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css"> 
+    <link rel="icon" href="../img/mini-logo-color.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/style.css"> 
     <!-- Toastr -->
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
@@ -97,7 +97,7 @@ $conn->close();
 
 <body>
     <div id="header">
-        <h1 id="logoKo" class="header_logo"><img src="img/logo.png?v=4"></h1>
+        <h1 id="logoKo" class="header_logo"><img src="../img/logo.png?v=4"></h1>
         <h2 id="logoTitle"> Registration </h2>
     </div>
 

@@ -3,7 +3,7 @@ session_start();
 $toastr = isset($_SESSION['toastr']) ? $_SESSION['toastr'] : null;
 unset($_SESSION['toastr']);
 
-require 'db_connect.php';
+require '../backend/db_connect.php';
 
 // Handle login
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION['id'] = $row['admin_id'];
                 $_SESSION['username'] = $row['admin_name'];
                 $_SESSION['admin_logged_in'] = true;
-                header("Location: ras_admin_dash.php"); // Redirect to admin dashboard
+                header("Location: ../admin_pages/ras_admin_dash.php"); //Redirect to admin dashboard
                 exit();
             } else {
                 // Student login successful
@@ -83,8 +83,8 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SKKU LRS - Login</title>
-    <link rel="icon" href="img/mini-logo-color.png" type="image/x-icon">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="../img/mini-logo-color.png" type="image/x-icon">
+    <link rel="stylesheet" href="../css/style.css">
     <!-- Toastr -->
     <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.0.1/css/toastr.css" rel="stylesheet"/>
@@ -109,7 +109,7 @@ $conn->close();
 
 <body>
     <div id="header">
-        <h1 id="logoKo" class="header_logo"><img src="img/logo.png?v=4"></h1>
+        <h1 id="logoKo" class="header_logo"><img src="../img/logo.png?v=4"></h1>
         <h2 id="logoTitle">Lab Reservation system</h2>
         <!--h1 id="logoEn" style="display:none" class="header_logo"><img src="customs/resources/image/logo_en.png"></h1-->
     </div>
