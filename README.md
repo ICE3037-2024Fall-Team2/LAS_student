@@ -1,5 +1,7 @@
 # Lab Reservation System
 
+This project is part of our Capstone Design Project for Sungkyunkwan University.
+
 ## Overview
 The **Lab Reservation System** is a web-based platform designed to simplify laboratory scheduling and management. It allows students to book labs online, receive updates via email, and view real-time availability. Lab managers can efficiently manage bookings, schedules, and notifications.
 
