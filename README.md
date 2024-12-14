@@ -7,7 +7,7 @@ The **Lab Reservation System** is a web-based platform designed to simplify labo
 
 ## Related Repositories
 - [Lab Access System - Software for Raspberry Pi](https://github.com/ICE3037-2024Fall-Team2/lab_access_system)  
-   *(This repository contains the software we developed for lab access control, facial recognition and QR code processing.)*
+   *(This repository contains the software we developed for lab access control, facial recognition and QR code processing, which is also a part of this project.)*
 
 ---
 
