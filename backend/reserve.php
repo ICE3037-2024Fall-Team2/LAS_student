@@ -2,7 +2,7 @@
 session_start();
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../student_pages/login.php");
     exit();
 }
 
@@ -118,7 +118,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $check_stmt->close();
 
     //header("Location: reservation.php");
-    header("Location: reservation.php?lab_id=" . urlencode($lab_id));
+    header("Location: ../student_pages/reservation.php?lab_id=" . urlencode($lab_id));
     exit;
 }
 

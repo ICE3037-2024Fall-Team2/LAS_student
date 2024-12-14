@@ -7,7 +7,7 @@ $bucketName = "lrsys-bucket";
 $imgPathPrefix = "user_photo/"; 
 
 if (!isset($_SESSION['username'])) {
-    header("Location: login.php");
+    header("Location: ../student_pages/login.php");
     exit();
 }
 
@@ -126,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 
     if ($stmt->execute()) {
-        header("Location: profile.php");
+        header("Location: ../student_pages/profile.php");
         exit;
     } else {
         echo "<script>alert('Error updating account info.');</script>";

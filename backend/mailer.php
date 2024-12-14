@@ -2,7 +2,7 @@
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// 加载 PHPMailer 的自动加载文件
+// Import the autoload file for PHPMailer library
 require __DIR__ . '/../vendor/autoload.php'; 
 
 
@@ -10,7 +10,7 @@ function sendEmail($recipientEmail, $emailSubject, $emailBody) {
     $mail = new PHPMailer(true);
 
     try {
-        // SMTP 配置
+        // Use SMTP for sending emails
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
@@ -18,19 +18,19 @@ function sendEmail($recipientEmail, $emailSubject, $emailBody) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
 
-        // 发件人
+        // Email sender information
         $mail->setFrom('', 'LabReservSys_SKKU');
 
-        // 收件人
+        // Add email of recipient
         $mail->addAddress($recipientEmail);
 
-        // 邮件内容
+        // Email content
         $mail->isHTML(true);
         $mail->Subject = $emailSubject;
         $mail->Body = $emailBody;
         $mail->AltBody = strip_tags($emailBody);
 
-        // 发送邮件
+        // Try to send email
         if ($mail->send()) {
             error_log("Email sent successfully to $recipientEmail");
         } else {

@@ -39,7 +39,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 
     // Redirect back to the profile or reservations page
-    header("Location: profile.php");
+    header("Location: ../student_pages/profile.php");
     exit();
 }
 

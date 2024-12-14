@@ -1,6 +1,6 @@
 <?php
 //require 'vendor/autoload.php'; // Ensure Composer's autoload is loaded
-require __DIR__ . '/../vendor/autoload.php'; // 引用共享的 autoload.php
+require __DIR__ . '/../vendor/autoload.php'; 
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
@@ -11,10 +11,12 @@ function generatePresignedUrl($bucketName, $key, $expiration = '+60 minutes')
     $awsSecret = getenv('AWS_SECRET_ACCESS_KEY');
     $region = getenv('AWS_DEFAULT_REGION');
 
+    // If credentials or region are not set, throw an error
     if (!$awsKey || !$awsSecret || !$region) {
         throw new Exception("AWS credentials are not set in the environment.");
     }
 
+    // Create an S3 client with the given credentials and region
     $s3 = new S3Client([
         'region' => $region,
         'version' => 'latest',
@@ -25,16 +27,16 @@ function generatePresignedUrl($bucketName, $key, $expiration = '+60 minutes')
     ]);
 
     try {
-        // 创建 S3 命令
+        // Create a command to get an object from S3
         $command = $s3->getCommand('GetObject', [
             'Bucket' => $bucketName,
             'Key'    => $key,
         ]);
 
-        // 创建预签名请求
+        // Create a presigned request (temporary URL) for this command
         $request = $s3->createPresignedRequest($command, $expiration);
 
-        // 返回预签名 URL
+        // Return the presigned URL as a string
         return (string)$request->getUri();
     } catch (AwsException $e) {
         throw new Exception("Error generating presigned URL: " . $e->getMessage());

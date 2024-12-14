@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
     }
 
-    header('Location: profile.php');
+    header('Location: ../student_pages/profile.php');
     exit;
 }
 
